@@ -5,7 +5,7 @@
  * @author karol
  *
  */
-class RepositoryException extends FBaseException {}
+class FRepositoryException extends FBaseException {}
 
 /**
  * sluzy do komunikacji modelu z baza danych

@@ -22,7 +22,7 @@ class FBase
 	 * @param mixed $var
 	 * @param string $txt
 	 */
-	public function dump($var, $txt)
+	protected function dump($var, $txt = '')
 	{
 		FLite::getInstance()->getDebugger()->dumpVar($var, $txt);
 	}

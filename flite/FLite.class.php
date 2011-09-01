@@ -125,7 +125,7 @@ class FLite
         
         $this->_smarty->assign('ROOT_WWW', ROOT_WWW);
         $this->_smarty->assign('DEBUG', DEBUG);
-        $this->_smarty->assign('REFERER', $_SERVER['HTTP_REFERER']);
+        $this->_smarty->assign('REFERER', isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : null);
 
         $this->_smarty->assign('currentUser', $this->getAuthManager()->getCurrentUser());
         
@@ -147,7 +147,8 @@ class FLite
 	        {
 	        		if (DEBUG)
 	        		{
-	        			$c->dump($this->getSession()->getAll(), 'SESSION');
+	        			$this->getDebugger()->dumpVar($this->getSession()->getAll(), 'SESSION');
+	        			$this->getDebugger()->dumpGlobals();
 	        			$this->_smarty->assign('DEBUG_HTML', $this->getDebugger()->getHTML());
 	        		}
 	        		 
@@ -158,6 +159,8 @@ class FLite
 	        		}
 	        		
 	                $this->_smarty->display('_layouts/'.$this->_layout.'.layout.tpl');
+	        } else {
+	        	throw new FBaseException("Controller must return FController::OK");
 	        }
         }
         elseif ($this->_mode == self::MODE_AJAX_JSON)
@@ -238,6 +241,7 @@ class FLite
     {
         include (ROOT_DIR.'/flite/lib/smarty/Smarty.class.php');
         $this->_smarty = new Smarty;
+
         //$smarty->use_sub_dirs = SMARTY_USE_SUB_DIRS;
         $this->_smarty->template_dir = ROOT_DIR . '/app/views';
         $this->_smarty->config_dir = ROOT_DIR . '/app/config';

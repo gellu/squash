@@ -11,7 +11,40 @@ class FEntityException extends FBaseException {}
  * @author Karol...
  */
 class FEntity extends FBase{
-
+	
+	/**
+	 * stan nowy, obiekt zostal wlasnie utworzony, wszystkie pola sa puste
+	 * 
+	 * @var int
+	 * @see $_state
+	 */
+	const STATE_NEW = 1;
+	
+	/**
+	 * obiekt w czasie inicjalizacji - jest obecnie wypelniany danymi podanymi do konstruktora (np dane z bazy)
+	 * 
+	 * @var int
+	 * @see $_state
+	 */
+	const STATE_INITIALIZATION = 2;
+	
+	/**
+	 * obiekt zostal wypelniony danymi z kostruktora
+	 * 
+	 * @var int
+	 * @see $_state
+	 */
+	const STATE_FILLED = 3;
+	
+	/**
+	 * obiekt zostal zmodyfikowany poza kostruktorem
+	 * 
+	 * @var int
+	 * @see $_state
+	 */
+	const STATE_TOUCHED = 4;
+	
+	
 	/**
 	 * identyfikator encji
 	 * 
@@ -27,13 +60,25 @@ class FEntity extends FBase{
 	protected $_modifiedFields = array();
 	
 	/**
+	 * stan obiektu - np pusty, w czasie wypelniania, wypelniony
+	 * 
+	 * @var int
+	 */
+	private $_state;
+	
+	/**
 	 * konstruktor
 	 * jesli podano tablice - sluzy ona do wypelnienia obiektu danymi
 	 * @param array $data [optional]
 	 */
 	public function __construct(array $data = array()) 
 	{
-		$this->fillFromArray($data, true);
+		$this->_state = self::STATE_NEW;
+		if (!empty($data)) {
+			$this->_state = self::STATE_INITIALIZATION;
+			$this->fillFromArray($data);
+			$this->_state = self::STATE_FILLED;
+		}
 	}
 	
 	/**
@@ -51,7 +96,7 @@ class FEntity extends FBase{
 			{
 				$field = $stringHelper->toCamelCase($key);
 				$this->$field = $val;
-				if (!$initial) {
+				if ($this->_state != self::STATE_INITIALIZATION) {
 					$this->_modifiedFields[$field] = true;	
 				}
 			}
@@ -73,7 +118,7 @@ class FEntity extends FBase{
 		$arr = array();
 		foreach($this as $field => $value)
 		{
-			if (in_array($field, array('_modifiedFields'))) {
+			if (in_array($field, array('_modifiedFields', '_state'))) {
 				continue;
 			}
 			//wycinamy poczatkowy podkreslnik
@@ -100,12 +145,18 @@ class FEntity extends FBase{
 		
 		if (property_exists($this, $fieldName)){
     		$this->$fieldName = $val;
-    		$this->_modifiedFields[$fieldName] = true;
+    		if ($this->_state != self::STATE_INITIALIZATION) {
+    			$this->_modifiedFields[$fieldName] = true;
+    			$this->_state = self::STATE_TOUCHED;
+    		}
     	}
     	elseif (property_exists($this, '_'.$fieldName)){
     		$fieldName = '_'.$fieldName;
     		$this->$fieldName = $val;
-    		$this->_modifiedFields[$fieldName] = true;
+    		if ($this->_state != self::STATE_INITIALIZATION) {
+    			$this->_modifiedFields[$fieldName] = true;
+    			$this->_state = self::STATE_TOUCHED;
+    		}
     	} else {
     		throw new FEntityException("Trying to set unknown field " . $fieldName);
     	}

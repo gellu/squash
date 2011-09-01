@@ -6,14 +6,11 @@
  * 
  */
  
- class FDebug
- {
- 	private $_errors = array();
- 	private $_warnings = array();
- 	private $_notices = array();
+class FDebug
+{
  	
  	private $_dumps = array();
- 	private $_globalDumps = array();
+ 	private $_sqlDumps = array();
  	
  	public function dumpVar($var, $txt = null)
  	{
@@ -35,11 +32,30 @@
  		$this->_dumps[] = $dump; 
  	}
  	
+ 	/**
+ 	 * zapisuje do debuga sqlke
+ 	 * 
+ 	 * @param string $query zapytanie
+ 	 * @param float time w milisekundach
+ 	 * @return void
+ 	 */
+ 	public function dumpSql($query, $time)
+ 	{
+ 		$timeTag = '['.$time.'ms] ';
+ 		if (!isset($this->_dumps['sql'])) {
+ 			$this->_dumps['sql']['desc']	= 'SQL';
+ 			$this->_dumps['sql']['file']	= $this->_dumps['sql']['line'] = '';
+ 			$this->_dumps['sql']['value']	= $timeTag . $query;
+ 		} else {
+ 			$this->_dumps['sql']['value'] .= "<br/>" . $timeTag . $query;
+ 		}
+ 	}
+ 	
  	public function dumpGlobals()
  	{
- 		$this->dumpVar($_GET);
- 		$this->dumpVar($_POST);
- 		$this->dumpVar($_SERVER);
+ 		$this->dumpVar($_GET, 'GET');
+ 		$this->dumpVar($_POST, 'POST');
+ 		//$this->dumpVar($_SERVER, 'SERVER');
  	}
  	
  	public function getDumps()

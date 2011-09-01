@@ -2,7 +2,7 @@
 /**
 * 
 */
-class FDB
+class FDB extends FBase
 {
     protected $_conn = null;
     private $_queriesCounter = 0;
@@ -24,7 +24,6 @@ class FDB
     public function query($sql)
     {
         $this->_queriesCounter++;
-        FLite::getInstance()->getLogger()->log($sql, LOG_DEBUG); 
         $sql = trim($sql);
         list($qryType,) = explode(" ", strtolower($sql));
         
@@ -34,11 +33,14 @@ class FDB
         
         $start = microtime(true);
         $q = mysql_query($sql);
-        $this->_exec_time += (microtime(true) - $start); 
+        $executionTime = (microtime(true) - $start);
+        $this->_exec_time += $executionTime; 
         
-        if (!$q)
+        $this->_logQuery($sql, $executionTime);
+        
+        if (!$q) {
             return null;
-        
+        }
         if ($qryType == "select")
         {
             $res = array();
@@ -158,6 +160,22 @@ class FDB
     {
     	//TODO
     	throw new Exception("Not yet implemented");
+    }
+    
+    /**
+     * zapisuje sqlke z jej czasem wykonania do pliku z logiem i do debuga
+     * 
+     * @param string $query
+     * @param float $time czas w sekundach
+     * @return void
+     */
+    private function _logQuery($query, $time)
+    {
+    	$displayExecutionTime = round($time*1000,2);
+    	$timeTag = '['.$displayExecutionTime.'ms] ';
+    	
+    	FLite::getInstance()->getLogger()->log($timeTag . $query, LOG_DEBUG);
+    	FLite::getInstance()->getDebugger()->dumpSql($query, $displayExecutionTime);
     }
     
         
