@@ -1,0 +1,1 @@
+Strona o takim adresie nie istnieje - sory.

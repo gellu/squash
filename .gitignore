@@ -1,0 +1,6 @@
+.settings
+.project
+.buildpath
+/app/var/cache
+/app/var/log
+/app/var/templates_c

@@ -1,0 +1,96 @@
+body 
+{
+	color: blue;
+	font: normal normal normal 76%/normal Helvetica, sans-serif;
+	background-color:#eee;
+}
+
+#bar
+{
+	position:absolute;
+	top:0;
+	left:0;
+	width:100%;
+	padding-top: 5px;
+	padding-left: 10px;
+	padding-bottom: 5px;
+	min-height:15px;
+	background-color: blue;
+	color: #ddd;
+}
+
+#bar a
+{
+	color: #ddd;
+}
+
+#bar a:hover
+{
+	color: #ddd;
+	text-decoration:none;
+}
+
+#Content 
+{
+	margin:0px auto; /* Right and left margin widths set to "auto" */
+	padding:50px;
+	width:980px;
+	
+	background-color:#eee;
+	border: 1px dotted black;
+}
+
+#message
+{
+	margin: 0px auto;
+	text-align:center;
+	background-color:#eee;
+	color:#000;
+	width:250px;
+	height:18px;
+}
+
+#message a
+{
+	color:#000;
+	font-weight:bold;
+}
+
+#message a:hover
+{
+	text-decoration:none;
+}
+
+input.placeholder  {
+	color:#999999;
+}
+
+div.cl
+{
+	clear:both;
+}
+#tasks_table input
+{
+	border: 1px solid #eee;
+	background-color:#eee;
+}
+
+#tasks_table
+{
+	list-style-type:none;
+}
+
+div.float_left {
+	float:left;
+}
+
+li.task 
+{
+	height:30px;
+}
+
+#add_task_input
+{
+	width:450px;
+	border: 1px solid #aaa;
+}

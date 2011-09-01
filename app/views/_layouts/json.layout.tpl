@@ -1,0 +1,1 @@
+{literal}{"stat": "{/literal}{$stat}{literal}", "resp": {/literal}{$resp}{literal}}{/literal}

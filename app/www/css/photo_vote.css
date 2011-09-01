@@ -1,0 +1,498 @@
+body 
+{
+	color: #fff;
+	font: normal normal normal 76%/normal Helvetica, sans-serif;
+	background-color:#000;
+}
+a
+{
+	color: #999;
+}
+
+a.active
+{
+	color: #ccc;
+}
+
+a:hover
+{
+	color: #ccc;
+	text-decoration:none;
+}
+
+#contact
+{
+	position: absolute;
+	top:5px; 
+	right:5px;
+	text-align:right;
+	color: #555;
+}
+
+#contact a
+{
+	color: #555;
+	font-size:11px;
+}
+
+#Content 
+{
+	margin:0px auto; /* Right and left margin widths set to "auto" */
+	padding:10px;
+	width:980px;
+	
+	background-color:#000;
+	border: 1px dotted black;
+}
+
+div.cl
+{
+	clear:both;
+}
+
+.center
+{
+	margin: 0px auto;
+	display:block;
+}
+
+div.back_link
+{
+	position:absolute;
+	left: 10px;
+	top: 10px;
+	
+	font-size:20px;
+	color: #999;
+	line-height:30px;
+}
+
+div.back_link a
+{
+	font-size:20px;
+	color: #999;
+}
+
+div.back_link a:hover
+{
+	color: #ccc;
+	text-decoration:none;
+}
+
+p.no_photos
+{
+	font-size:40px;
+	color: #999;
+	display:block;
+}
+
+p.no_photos_button a
+{
+	font-size:30px;
+}
+p.no_photos_button
+{
+	margin-top:20px;
+}
+/************************************/
+/******** GLOWNE GLOSOWANIE **********/
+/************************************/
+#vote_photo
+{
+	height:650px;
+	
+}
+#vote_photo img.next
+{
+	width:1px;
+	height:1px;
+	margin-top:-600px;
+	border:none;
+	padding:none;
+}
+
+#vote_photo img
+{
+	padding: 5px;
+	border: 1px solid #555;
+}
+
+div.vote_buttons
+{
+	width: 240px;
+	margin-top:20px;
+	height:30px;
+}
+
+div.vote_buttons a
+{
+	width:100px;
+	height:100px;
+	display:block;
+	cursor:pointer;
+}
+
+div.vote_buttons a.plus_vote
+{
+	background-image:url("../img/plus_bw.png");
+	float:left;
+}
+div.vote_buttons a.plus_vote:hover
+{
+	background-image:url("../img/plus.png");
+}
+
+div.vote_buttons a.minus_vote
+{
+	background-image:url("../img/minus_bw.png");
+	float:right;	
+}
+
+div.vote_buttons a.minus_vote:hover
+{
+	background-image:url("../img/minus.png");
+}
+
+/************************************/
+/********* WELCOME DIALOG ***********/
+/************************************/
+#welcome_button
+{
+	margin-top:20px;
+	margin-left: 205px;
+}
+
+#welcome_dialog input.welcome_name
+{
+	color:#999;
+	background-color:#333;
+	border: 1px solid #444;
+	margin-top:40px;
+}
+
+#welcome_dialog p
+{
+	text-align: center;
+}
+
+/************************************/
+/*********** CHECKPOINT *************/
+/************************************/
+#checkpoint_info
+{
+	display:none;
+	margin-left:277px;
+	width:420px;
+	text-align:center;
+	color: #aaa;
+}
+
+#checkpoint_info p.info
+{
+	font-size:30px;
+	margin-bottom:40px;
+}
+
+#checkpoint_info a
+{
+	color: #aaa;
+}
+
+/************************************/
+/****** WYNIKI GLOSOWANIA ***********/
+/************************************/
+#results
+{
+	width:700px;
+	float:left;
+	text-align:right;
+	margin-top: 30px;
+}
+
+#results img
+{
+	width:100px;
+	margin: 8px;
+	padding: 7px;
+	border:none;
+}
+
+#results img.photo_1
+{
+	padding: 0px;
+	width:180px;
+	border: 7px solid #FFD83D;
+}
+
+#results img.photo_2
+{
+	padding: 0px;
+	width:150px;
+	border: 7px solid #c2c2c2;
+}
+
+#results img.photo_3
+{
+	padding: 0px;
+	width:120px;
+	border: 7px solid #996600;
+}
+
+#results span.bar
+{
+	display:block;
+	height:100%;
+	background-color:#339933;
+	color: #eee;
+	font-size:20px;
+	height: 30px;
+	float:left;
+	padding-top:4px;
+	padding-left:5px;
+}
+
+#results span.number
+{
+	text-align:left;
+	margin-left:10px;
+	font-size:30px;
+}
+
+#results td.bar
+{
+	text-align:left;
+	color:#444;
+	padding-left:55px;
+}
+
+#results span.position
+{
+	display:none;
+	font-family:georgia;
+	margin-right:77px;
+	margin-top:-40px;
+}
+
+
+#results #position_1 
+{
+	display:block;
+	color:#FFD83D;
+	font-size:200px;
+}
+
+#results #position_2 
+{
+	display:block;
+	color:#c2c2c2;
+	font-size:140px;
+}
+
+#results #position_3 
+{
+	display:block;
+	color:#996600;
+	font-size:110px;
+}
+
+#results div.user_vote
+{
+	padding-top:45px;
+	color: #aaa;
+}
+
+#results div.user_vote img
+{
+	width:15px;
+	padding: 0px;
+	margin: 0px;
+	vertical-align:middle;
+}
+
+#results a 
+{
+	color: #888;
+}
+
+#results a:hover 
+{
+	text-decoration:none;
+}
+
+
+/************************************/
+/*********** NAWIGACJA **************/
+/************************************/
+
+#nav
+{
+	font-size: 25px;
+	margin-top: 10px;
+	margin-left:3px;
+}
+
+#nav a
+{
+	color: #999;
+	font-family: tahoma;
+	margin-left: 52px;
+	margin-right: 37px;
+}
+
+#nav a.active
+{
+	color: #ccc;
+}
+
+#nav a:hover
+{
+	color: #ccc;
+	text-decoration:none;
+}
+
+#proceed_to_vote_button  
+{
+	
+}
+
+#proceed_to_vote_button a, #proceed_to_vote_button a:hover  
+{
+	color: #fff;
+	margin-left: 112px;
+	margin-right: 112px;
+}
+/************************************/
+/*****  WYNIKI GLOSOWANIA  **********/
+/********  GLOSOWANIE  **************/
+/*
+#results div.vote_buttons
+{
+	width: 35px;
+	margin-top: -3px;
+	margin-left: 68px;
+}
+
+#results div.vote_buttons a
+{
+	width:15px;
+	height:15px;
+	display:block;
+	cursor:pointer;
+}
+
+#results div.vote_buttons a.plus_vote
+{
+	background-image:url("../img/plus_bw_min.png");
+	float:left;
+}
+#results div.vote_buttons a.plus_vote:hover
+{
+	background-image:url("../img/plus_min.png");
+}
+
+#results div.vote_buttons a.minus_vote
+{
+	background-image:url("../img/minus_bw_min.png");
+	float:right;	
+}
+
+#results div.vote_buttons a.minus_vote:hover
+{
+	background-image:url("../img/minus_min.png");
+}
+*/
+
+
+
+
+#show_photo span.bar
+{
+	display:block;
+	height:100%;
+	color: #eee;
+	font-size:20px;
+	height: 30px;
+	float:left;
+	padding-top:4px;
+	padding-left:5px;
+}
+
+#show_photo span.green
+{
+	background-color:#339933;
+}
+
+#show_photo span.red
+{
+	background-color:#as9f33;
+}
+
+#show_photo div.user_vote
+{
+	width: 300px;
+	font-size:20px;
+	color:#aaa;
+}
+
+#show_photo div.user_vote img
+{
+	vertical-align:middle;
+}
+
+
+
+/************************************/
+/****** FOTKI OCENIONE PRZEZ USERA ***********/
+/************************************/
+#voter_photos
+{
+	width:980px;
+	float:left;
+	margin-top:60px;
+}
+
+#voter_photos img.photo
+{
+	width:160px;
+	
+	border:none;
+	border: 1px solid #333;
+
+}
+
+#voter_photos ul
+{
+	padding:0; 
+	margin:0; 
+}
+
+#voter_photos li
+{
+	list-style-type:none; 
+	width:220px;
+	height:auto;
+	float:left;
+	margin-bottom:40px;
+}
+
+#voter_photos div.votes_info
+{
+	margin-top: 5px;
+	width: 160px;
+	color: #aaa;
+	font-size:9px;
+	opacity: 0.5;
+}
+
+#voter_photos div.votes_info span.overall
+{
+	
+	text-align:right;
+	float:right;
+}
+
+#voter_photos div.votes_info img
+{
+	vertical-align:middle;
+	width:12px;
+	margin-top:-2px;
