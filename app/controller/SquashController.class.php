@@ -44,7 +44,7 @@ class SquashController extends FController
     {
     	$this->requireLogged();
     	
-    	$this->dump($date);
+
     	$this->_getDataForPlayedAtDate($date);
     	$this->setPage('squash/index');
     	
