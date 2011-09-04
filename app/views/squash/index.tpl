@@ -1,4 +1,5 @@
 <div id="squashResults">
+	<input type="hidden" id="date" name="date" value="{$date}">
 		<h3>
 			{if $prevDate}<small>&laquo; <a href="{$ROOT_WWW}/squash/show-date/{$prevDate}">{$prevDate}</a></small>{/if}
 			Wyniki z {$date}
@@ -24,15 +25,16 @@
 			<tr>
 				<td class="playerName">{$playerOne->shortName}</td>
 				{foreach from=$players item=playerTwo key=playerTwoId}
-					<td class="result">
+					<td class="result" id="result_{$playerOne->id}_{$playerTwo->id}">
 						{if $playerOneId == $playerTwoId}
 							<span class="ex">X</span>
 						{else}
-							<div class=score>
+							<input type="text" value="{$results.$playerOneId.$playerTwoId->scoreOne} : {$results.$playerOneId.$playerTwoId->scoreTwo}">
+							{*<div class=score>
 								<span class="score">{$results.$playerOneId.$playerTwoId->scoreOne}</span>
 								:
 								<span class="score">{$results.$playerOneId.$playerTwoId->scoreTwo}</span>
-							</div>
+							</div>*}
 						{/if}
 					</td>
 				{/foreach}

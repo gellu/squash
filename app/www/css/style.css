@@ -72,8 +72,11 @@ div.cl
 
 #squashResults {font: normal normal normal 76%/normal Verdana, sans-serif; color: #696969}
 #squashResults h3 {font-size:18px;}
-#squashResults table.results td {padding:10px;font-size:14px; text-align:center; border:none;}
-#squashResults table.results .highlight {background-color: #FFFFF1}
-#squashResults table.results span.score {font-weight:bold}
-#squashResults table.results span.ex {color: #eee}
+#squashResults table.results td {padding:10px; text-align:center; border:none;}
+#squashResults table.results .highlight {background-color: #FFFFaa}
 #squashResults table.results .playerName {font-size: 13px; color: #696969; font-weight: bold}
+#squashResults table.results td.result span.ex {color: #eee}
+#squashResults table.results td.result input {border:1px solid #fff; background-color:#fff; width:33px; font-size:14px; font-weight:bold}
+#squashResults table.results td.highlight input {background-color: #ffffaa}
+#squashResults table.results td.result input.active {border: 1px solid #ccc; }
+#squashResults table.results td.result span.colon {background-color:#fff}

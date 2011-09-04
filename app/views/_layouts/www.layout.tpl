@@ -10,7 +10,7 @@
 	<script type="text/javascript" src="{$ROOT_WWW}/js/jquery.jeditable.js"></script>
 	{literal}
 	<script>
-		var ROOT_WWW = '{$ROOT_WWW}';
+		var ROOT_WWW = '{/literal}{$ROOT_WWW}{literal}';
 	</script>
 	{/literal}
 </head> 

@@ -38,7 +38,7 @@ class FRepository extends FBase{
 	public function save(FEntity $entity, $replace = false)
 	{
 		if ($this->_id) {
-			return $this->update();
+			return $this->update($entity);
 		}
 		
 		$class = get_class($this);
@@ -85,7 +85,13 @@ class FRepository extends FBase{
 		
 	}
 	
-	public function update()
+	/**
+	 * aktualizuje dane a w bazie
+	 * 
+	 * @param FEntity $entity
+	 * @return
+	 */
+	public function update(FEntity $entity)
 	{
 		
 		$class = get_class($this);
@@ -119,6 +125,30 @@ class FRepository extends FBase{
 	{
 		$sql = "SELECT * FROM ".$this->_getTableName()." WHERE id = '".$id."'";
 		$data = $this->_db->getRow($sql);
+		if ($data === null) {
+			return null;
+		}
+		
+		$entityClass = $this->_getEntityClassName();
+		return new $entityClass($data);
+	}
+	
+	/**
+	 * zwraca obiekt wg podanych warunkow
+	 * 
+	 * @param array $conditions array('field' => value )
+	 * @return FEntity
+	 */
+	public function getOneBy(array $conditions)
+	{
+		$stringHelper	= new FStringHelper();
+		$conditionsStr	= array();
+		foreach ($conditions as $field => $value) {
+			$conditionsStr[] = "`".$stringHelper->fromCamelCase($field)."` = '".$value."'";
+		}
+		
+		$sql	= "SELECT * FROM ".$this->_getTableName()." WHERE ".implode(' AND ', $conditionsStr);
+		$data	= $this->_db->getRow($sql);
 		if ($data === null) {
 			return null;
 		}
