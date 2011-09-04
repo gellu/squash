@@ -32,48 +32,47 @@ class FRepository extends FBase{
 	/**
 	 * obiekt do dodania do bazy danych
 	 * 
-	 * @param FEntity $entity
-	 * @param boolean $replace czy insert ma byc zamieniony na replace
+	 * @param	FEntity $entity encja/obiekt do wstawienia do bazy
+	 * @param	boolean $replace czy insert ma byc zamieniony na replace
+	 * @return	boolean true on success
 	 */
 	public function save(FEntity $entity, $replace = false)
 	{
-		if ($this->_id) {
+		
+		if ($entity->id) {
 			return $this->update();
 		}
 		
-		$class = get_class($this);
-		$table = str_ireplace('Model', '', $class);
-		$table = $this->_fromCamelCase($table);
-		$fields = array();
-
-		foreach ($this as $f => $v)
+		$table = $this->_getTableName();
+		$entityFields	= $entity->getEntityFieldNames($withId = false);
+		$fieldsToSave	= array();
+		$stringHelper	= new FStringHelper();
+		
+		foreach ($entityFields as $field)
 		{
-			if (in_array($f, array('_id', '_modifiedFields', ))) {
-				continue;
+			$field	 = (substr($field,0,1) == '_') ? substr($field,1) : $field;
+			$dbField = $stringHelper->fromCamelCase($field);
+			if ($field == 'createdAt' && is_null($entity->$field)) {
+				//z automatu ustawiamy createdAt
+				$fieldsToSave[$dbField] = 'NOW()';
+			} else {
+				//zamieniamy array na jsona, escapujemy i pakujemy w ciapki
+				$value = is_array($entity->$field) ? json_encode($entity->$field) : $entity->$field;
+				$value = $this->_db->escape($value);
+				$fieldsToSave[$dbField] = "'" . $value . "'";
 			}
-			
-			$f = (substr($f,0,1) == '_') ? substr($f,1) : $f;
-			if ($f == 'created_at' && is_null($v)) {
-				$fields[$f] = 'NOW()';
-			}
-			if ($v === null) {
-				continue;	
-			}
-			$fields[$f] = "'" . (is_array($v) ? $this->_db->escape(json_encode($v)) : $this->_db->escape($v)) . "'";
 		}
 		
-		$type = $replace ? "REPLACE" : "INSERT";
-		$q = sprintf("$type INTO $table (%s) VALUES (%s)", implode(',', array_keys($fields)), implode(',', array_values($fields)));
-		$stat = $this->_db->query($q);
-		if ($stat)
+		$type	= $replace ? "REPLACE" : "INSERT";
+		$q		= sprintf("$type INTO $table (%s) VALUES (%s)", implode(',', array_keys($fieldsToSave)), implode(',', array_values($fieldsToSave)));
+		
+		if ($this->_db->query($q))
 		{
-			$this->_id = $this->_db->getLastInsertId();
+			$entity->id = $this->_db->getLastInsertId();
 			return true;
+		} else {
+			throw new FRepositoryException("saving to ".$table." failed: " . $q);
 		}
-		else
-			return false;
-		
-		
 	}
 	
 	public function delete()
