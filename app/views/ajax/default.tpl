@@ -1,2 +1,1 @@
-{$resp}
-
+{$resp|default:""|@json_encode}

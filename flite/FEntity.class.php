@@ -212,6 +212,18 @@ class FEntity extends FBase{
     	
     }
     
+    /**
+     * zwraca nazwy zmodyfikowanych pol 
+     * 
+     * @return array
+     */
+    public function getModifiedFieldNames()
+    {
+    	return $this->_modifiedFields;
+    }
+    
+    
+    
     
     
 }

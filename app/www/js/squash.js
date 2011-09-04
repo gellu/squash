@@ -30,6 +30,7 @@ function saveResult(playersStr, scoreStr, date)
 	$.ajax({
 		  url: ROOT_WWW + '/ajax/squash-edit/save-result',
 		  type: 'POST',
+		  dataType: 'json',
 		  data: {
 			  player_one_id: playersArr[1],
 			  player_two_id: playersArr[2],
@@ -38,7 +39,7 @@ function saveResult(playersStr, scoreStr, date)
 			  date:			 date
 		  },
 		  success: function(){
-		   alert('saved');
+			  alert('saved');
 		  }
 		});
 }

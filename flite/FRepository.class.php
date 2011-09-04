@@ -35,10 +35,11 @@ class FRepository extends FBase{
 	 * @param	FEntity $entity encja/obiekt do wstawienia do bazy
 	 * @param	boolean $replace czy insert ma byc zamieniony na replace
 	 * @return	boolean true on success
+	 * @throws	FRepositoryException jesli nie udalo sie zapisac
 	 */
 	public function save(FEntity $entity, $replace = false)
 	{
-		if ($this->id) {
+		if ($entity->id) {
 			return $this->update($entity);
 		}
 		
@@ -87,29 +88,43 @@ class FRepository extends FBase{
 	 * aktualizuje dane a w bazie
 	 * 
 	 * @param FEntity $entity
-	 * @return
+	 * @return boolean
+	 * @throws FRepositoryException jesli zadne dane nie zostaly zmodyfikowane lub nie udalo sie zapisac
 	 */
 	public function update(FEntity $entity)
 	{
+		$table = $this->_getTableName();
+		$stringHelper	= new FStringHelper();
 		
-		$class = get_class($this);
-		$table = strtolower(str_ireplace('Model', '', $class));
-		$db = FLite::getInstance()->getDB();
 		$fields = array();
+		$modifiedFields = $entity->getModifiedFieldNames();
+		if (empty($modifiedFields)) {
+			throw new FRepositoryException("no field was modified");
+		}
 
-		foreach ($this->_modifiedFields as $f => $tmp)
+		foreach ($modifiedFields as $field => $tmp)
 		{
-			if ($f == '_id')
+			if ($field == '_id') {
 				continue;
-				
-			//$f = (substr($f,0,1) == '_') ? substr($f,1) : $f;
-			$fields[] = sprintf("`%s` = '%s'", ((substr($f,0,1) == '_') ? substr($f,1) : $f) , (is_array($this->$f) ? $db->escape(json_encode($this->$f)) : $db->escape($this->$f)));
+			}
+			//wywalamy podkreslnik dla pol prywatnych encji
+			$field	 = (substr($field,0,1) == '_') ? substr($field,1) : $field;
+			//dostajemy pola w camelcase'ie a w bazie mamy z podkreslnikami
+			$dbField = $stringHelper->fromCamelCase($field);
+			
+			$value = is_array($entity->$field) ? json_encode($entity->$field) : $entity->$field;
+			$value = $this->_db->escape($value);
+			$fieldsToSaveStr[] = "`". $dbField."` = '" . $value . "'";
 		}
 		
 
-		$q = sprintf("UPDATE $table SET %s WHERE id = '%d'", implode(',', $fields), $this->_id);
-		
-		return $db->query($q);
+		$q = sprintf("UPDATE $table SET %s WHERE id = '%d'", implode(',', $fieldsToSaveStr), $entity->id);
+
+		if ($this->_db->query($q)) {
+			return true;
+		} else {
+			throw new FRepositoryException("update'ing table ".$table." field");
+		}
 		
 	}
 	
@@ -135,11 +150,16 @@ class FRepository extends FBase{
 	 * zwraca obiekt wg podanych warunkow
 	 * 
 	 * @param array $conditions array('field' => value )
-	 * @return FEntity
+	 * @return FEntity|null
+	 * @throws FRepositoryException przy pustej tablicy $conditions 
 	 */
 	public function getOneBy(array $conditions)
 	{
 		$stringHelper	= new FStringHelper();
+		
+		if (empty($conditions)) {
+			throw new FRepositoryException("conditions array cannot be empty");
+		}
 		$conditionsStr	= array();
 		foreach ($conditions as $field => $value) {
 			$conditionsStr[] = "`".$stringHelper->fromCamelCase($field)."` = '".$value."'";

@@ -22,8 +22,6 @@ class SquashEditController extends FController
 		
 		$repo = new SquashResultRepository();
 		$result = $repo->getOneBy(array('playerOneId' => $playerOneId, 'playerTwoId' => $playerTwoId, 'playedAt' => $playedAt));
-		var_dump($result);
-		
 		
 		if ($result) {
 			$result->scoreOne = $scoreOne;
@@ -39,9 +37,14 @@ class SquashEditController extends FController
 			$result = new SquashResultEntity($data);
 		}
 		
-		$repo->save($result);
-		$this->setPage('ajax/default');
-		return FController::OK;
+		try {
+			$repo->save($result);
+			$this->setPage('ajax/default');
+			return FController::OK;
+		} catch (Exception $e) {
+			
+			return FController::ERR;
+		}
 		
 	}
 }
