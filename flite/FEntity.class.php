@@ -191,6 +191,27 @@ class FEntity extends FBase{
     	}
     } 
     
+    /**
+     * zwraca nazwy pol encji (z pominieciem _modifiedFields i _state)
+     * 
+     * @param boolean $withId czy zwrocic rowniez pole _id
+     * @return array
+     */
+    public function getEntityFieldNames($withId = true)
+    {
+    	$allFieldNames = array_keys(get_object_vars($this));
+    	$allFieldNamesT = array_flip($allFieldNames);
+    	
+    	//wywala niepotrzebne pola
+    	unset($allFieldNamesT['_modifiedFields'], $allFieldNamesT['_state']);
+    	if (!$withId) {
+    		unset($allFieldNamesT['_id']);
+    	}
+    	
+    	return array_flip($allFieldNamesT);
+    	
+    }
+    
     
     
 }

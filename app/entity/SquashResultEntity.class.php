@@ -8,8 +8,8 @@ class SquashResultEntity extends FEntity
 	 */
 	protected $_playerOneId;
 	
-	private $_playerOne;
-	private $_playerTwo;
+	//private $_playerOne;
+	//private $_playerTwo;
 	
 	/**
 	 * id drugiego gracza
