@@ -5,7 +5,8 @@
 			Wyniki z {$date}
 			<span class="next">&nbsp;{if $nextDate}<a href="{$ROOT_WWW}/squash/show-date/{$nextDate}">{$nextDate}<a/> &raquo;{/if}</span>
 		</p>
-		
+	<p class="editInfo">Kliknij wynik, aby go edytować</p>	
+	<div class="cl"></div>
 	<table class="results">
 		<colgroup>
 			<col>
