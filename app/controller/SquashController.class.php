@@ -61,7 +61,8 @@ class SquashController extends FController
     {
     	list($prevDate, $nextDate) = $this->_squashResultRepo->getNeighbouringDates($date);
     	
-    	$results	= $this->_squashResultRepo->getResultsPlayedAt($date);
+    	//$results	= $this->_squashResultRepo->getResultsPlayedAt($date);
+    	$results	= $this->_squashResultRepo->getAllBy(array('playedAt' => $date));
     	//indeksujemy tablice wynikow wg id graczy
     	$resultsByPlayers = array();
     	foreach ($results as $result) {

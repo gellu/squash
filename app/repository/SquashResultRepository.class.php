@@ -42,7 +42,7 @@ class SquashResultRepository extends FRepository
 	 * 
 	 * @param string $date
 	 * @return array tablica SquashResultEntity
-	 */
+	 
 	public function getResultsPlayedAt($date)
 	{
 		$sql	= "SELECT * FROM ".$this->_getTableName()." WHERE played_at = '".$date."'";
@@ -57,5 +57,5 @@ class SquashResultRepository extends FRepository
 		}
 		
 		return $results;
-	}
+	}*/
 }

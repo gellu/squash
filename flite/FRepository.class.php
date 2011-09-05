@@ -151,9 +151,50 @@ class FRepository extends FBase{
 	 * 
 	 * @param array $conditions array('field' => value )
 	 * @return FEntity|null
-	 * @throws FRepositoryException przy pustej tablicy $conditions 
 	 */
 	public function getOneBy(array $conditions)
+	{
+		$sql	= $this->_genereateSelectForConditions($conditions);
+		$data	= $this->_db->getRow($sql);
+		if ($data === null) {
+			return null;
+		}
+		
+		$entityClass = $this->_getEntityClassName();
+		return new $entityClass($data);
+	}
+	
+	/**
+	 * zwraca obiekty wg podanych warunkow
+	 * 
+	 * @param array $conditions
+	 * @return array|null tablica obiektow
+	 */
+	public function getAllBy(array $conditions)
+	{
+		$sql	= $this->_genereateSelectForConditions($conditions);
+		$data	= $this->_db->getResults($sql);
+		if ($data === null) {
+			return null;
+		}
+		
+		$entityClass = $this->_getEntityClassName();
+		$objects	 = array();
+		foreach ($data as $row) {
+			$objects[] = new $entityClass($row);
+		}
+		
+		return $objects;
+	}
+	
+	/**
+	 * buduje zapytanie dla zadanych warunkow
+	 * 
+	 * @param array $conditions array('field' => value )
+	 * @throws FRepositoryException przy pustej tablicy $conditions 
+	 * @return string
+	 */
+	private function _genereateSelectForConditions(array $conditions)
 	{
 		$stringHelper	= new FStringHelper();
 		
@@ -166,13 +207,8 @@ class FRepository extends FBase{
 		}
 		
 		$sql	= "SELECT * FROM ".$this->_getTableName()." WHERE ".implode(' AND ', $conditionsStr);
-		$data	= $this->_db->getRow($sql);
-		if ($data === null) {
-			return null;
-		}
 		
-		$entityClass = $this->_getEntityClassName();
-		return new $entityClass($data);
+		return $sql;
 	}
 	
 	/**
