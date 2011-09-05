@@ -39,7 +39,7 @@ function saveResult(playersStr, scoreStr, date)
 			  date:			 date
 		  },
 		  success: function(){
-			  alert('saved');
+			 
 		  }
 		});
 }

@@ -168,11 +168,38 @@ class FRepository extends FBase{
 	 * zwraca obiekty wg podanych warunkow
 	 * 
 	 * @param array $conditions
+	 * @throws FRepositoryException jesli podanao pusta tablice warunkow
 	 * @return array|null tablica obiektow
 	 */
 	public function getAllBy(array $conditions)
 	{
-		$sql	= $this->_genereateSelectForConditions($conditions);
+		if (empty($conditions)) {
+			throw new FRepositoryException("conditions array cannot be empty");
+		}
+		$sql = $this->_genereateSelectForConditions($conditions);
+		return $this->_handleMultipleResultsQuery($sql);
+	}
+	
+	/**
+	 * zwraca obiekty odpowiadajace wszystkim rekordom z bazy
+	 * 
+	 * @return array
+	 */
+	public function getAll()
+	{
+		$sql = $this->_genereateSelectForConditions(array());
+		return $this->_handleMultipleResultsQuery($sql);
+	}
+	
+	/**
+	 * zwraca tablice obiektow bedacych wynikiem zapytania o wiele rekordow
+	 * uzywana przez getAll i getAllBy
+	 * 
+	 * @param string $sql
+	 * @return array|null
+	 */
+	private function _handleMultipleResultsQuery($sql)
+	{
 		$data	= $this->_db->getResults($sql);
 		if ($data === null) {
 			return null;
@@ -189,24 +216,24 @@ class FRepository extends FBase{
 	
 	/**
 	 * buduje zapytanie dla zadanych warunkow
+	 * $conditions musi byc tablica
 	 * 
-	 * @param array $conditions array('field' => value )
-	 * @throws FRepositoryException przy pustej tablicy $conditions 
+	 * @param array $conditions array('field' => value ), jesli jest pusta select wybiera wszystkie rekordy
 	 * @return string
 	 */
 	private function _genereateSelectForConditions(array $conditions)
 	{
 		$stringHelper	= new FStringHelper();
 		
-		if (empty($conditions)) {
-			throw new FRepositoryException("conditions array cannot be empty");
-		}
-		$conditionsStr	= array();
-		foreach ($conditions as $field => $value) {
-			$conditionsStr[] = "`".$stringHelper->fromCamelCase($field)."` = '".$value."'";
+		if (!empty($conditions)) {
+			$conditionsStr	= array();
+			foreach ($conditions as $field => $value) {
+				$conditionsStr[] = "`".$stringHelper->fromCamelCase($field)."` = '".$value."'";
+			}
 		}
 		
-		$sql	= "SELECT * FROM ".$this->_getTableName()." WHERE ".implode(' AND ', $conditionsStr);
+		$sql	= "SELECT * FROM ".$this->_getTableName();
+		$sql	.= (!empty($conditions)) ? " WHERE ".implode(' AND ', $conditionsStr) : "";
 		
 		return $sql;
 	}

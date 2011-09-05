@@ -69,12 +69,10 @@ class SquashController extends FController
     		$resultsByPlayers[$result->playerOneId][$result->playerTwoId] = $result;
     	}
     	
-    	//zbieramy dane o graczach
-    	$playerIds = array_keys($resultsByPlayers);
     	$players = array();
-    	//TODO: wybieranie jednym zapytaniem
-    	foreach ($playerIds as $playerId) {
-    		$players[$playerId] = $this->_usersRepo->getById($playerId);
+    	$allPlayers = $this->_usersRepo->getAll();
+    	foreach ($allPlayers as $player) {
+    		$players[$player->id] = $player;
     	}
     	
     	$this->assign('date', $date);
