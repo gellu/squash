@@ -65,8 +65,10 @@ class SquashController extends FController
     	$results	= $this->_squashResultRepo->getAllBy(array('playedAt' => $date));
     	//indeksujemy tablice wynikow wg id graczy
     	$resultsByPlayers = array();
-    	foreach ($results as $result) {
-    		$resultsByPlayers[$result->playerOneId][$result->playerTwoId] = $result;
+    	if (is_array($results)) {
+	    	foreach ($results as $result) {
+	    		$resultsByPlayers[$result->playerOneId][$result->playerTwoId] = $result;
+	    	}
     	}
     	
     	$players = array();

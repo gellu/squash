@@ -18,10 +18,15 @@ $(document).ready(function(){
 		$(this).addClass("active");
 	})
 	.mask("9:9")
-	.keydown(function(event){
+	.keyup(function(event){
 		if (event.keyCode == 13) {
 			$(this).blur();
 		}
+		var playersArr	= $(this).parent().attr("id").split('_');
+		var scoresArr	= $(this).val().split(':');
+		//console.log($(this).parent().attr("id"));
+		//console.log("#result_"+playersArr[2]+"_"+playersArr[1]+" input");
+		$("#result_"+playersArr[2]+"_"+playersArr[1]+" input").val(scoresArr[1].trim()+":"+scoresArr[0].trim()).addClass('activeSecond');
 	})
 	.blur(function(){
 		$(this).removeClass("active");
@@ -37,15 +42,20 @@ function saveResult(playersStr, scoreStr, date)
 		return;
 	}
 	
+	var player_one_id = playersArr[1];
+	var player_two_id = playersArr[2];
+	var score_one	= scoresArr[0].trim();
+	var score_two	= scoresArr[1].trim();
+	
 	$.ajax({
 		  url: ROOT_WWW + '/ajax/squash-edit/save-result',
 		  type: 'POST',
 		  dataType: 'json',
 		  data: {
-			  player_one_id: playersArr[1],
-			  player_two_id: playersArr[2],
-			  score_one:	 scoresArr[0].trim(),
-			  score_two:	 scoresArr[1].trim(),
+			  player_one_id: player_one_id,
+			  player_two_id: player_two_id,
+			  score_one:	 score_one,
+			  score_two:	 score_two,
 			  date:			 date
 		  },
 		  beforeSend: function(){
@@ -54,6 +64,7 @@ function saveResult(playersStr, scoreStr, date)
 		  success: function(){
 			  $("img.ajaxLoader").hide();
 			  $("img.okIcon").fadeIn('slow').delay(600).fadeOut('slow');
+			  $("#result_"+player_two_id+"_"+player_one_id+" input").removeClass('activeSecond')
 			  //$("img.okIcon").fadeOut('slow');
 			  
 		  }

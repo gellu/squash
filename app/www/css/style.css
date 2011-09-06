@@ -86,6 +86,7 @@ div.cl
 #squashResults table.results td.result input {border:1px solid #fff; background-color:#fff; width:43px; font-size:14px; font-weight:bold; padding:5px; letter-spacing:3px}
 #squashResults table.results td.highlight input {background-color: #ebeaff}
 #squashResults table.results td.result input.active {border: 1px solid #ccc; border-radius:3px; background-color:#e4e3f7}
+#squashResults table.results td.result input.activeSecond {border: 1px solid #ccc; border-radius:3px; background-color:#fafaff; color: #a2a2a2}
 #squashResults table.results td.result span.colon {background-color:#fff}
 
 .ajaxLoader, .okIcon {display:none;} 
