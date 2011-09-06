@@ -1,6 +1,6 @@
 RewriteEngine On
-
-RewriteRule ^(.*)ajax ajax.php [QSA,L] 
+#RewriteRule \.(jpg|jpeg|png|gif)$ - [NC,F,L]
+RewriteRule ^(.*)ajax\/ ajax.php [QSA,L] 
 RewriteCond %{REQUEST_URI} \..+$
 RewriteRule .* - [L] 
 # wszystkie pozostale requesty na glowny front-controller

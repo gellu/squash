@@ -76,14 +76,16 @@ div.cl
 #squashResults p.date span a {color: #45525b}
 
 #squashResults p.editInfo {margin: 30px 300px 0px;display:block;float:right; color:#c0c0c0}
-#squashResults table.results {text-align:center; margin-left: 200px; }
-#squashResults table.results td {padding:5px; text-align:center; border:none; width:40px;}
+#squashResults table.results {text-align:center; margin-left: 200px; border-collapse:collapse;}
+#squashResults table.results td {padding:5px; text-align:center; border:none; width:43px; border: 1px solid #f1f1f1;}
 #squashResults table.results .highlight {background-color: #f7f7f7}
-#squashResults table.results .playerName {font-size: 13px; color: #696969; font-weight: bold; height:40px; width:40px}
+#squashResults table.results .playerName {font-size: 13px; color: #696969; font-weight: bold; height:40px; width:40px;border: 1px solid #f1f1f1;}
 
 
-#squashResults table.results td.result span.ex {color: #eee}
-#squashResults table.results td.result input {border:1px solid #fff; background-color:#fff; width:43px; font-size:14px; font-weight:bold; padding:5px;}
+#squashResults table.results td.result span.ex {color: #ccc}
+#squashResults table.results td.result input {border:1px solid #fff; background-color:#fff; width:43px; font-size:14px; font-weight:bold; padding:5px; letter-spacing:3px}
 #squashResults table.results td.highlight input {background-color: #ebeaff}
 #squashResults table.results td.result input.active {border: 1px solid #ccc; border-radius:3px; background-color:#e4e3f7}
 #squashResults table.results td.result span.colon {background-color:#fff}
+
+.ajaxLoader, .okIcon {display:none;} 

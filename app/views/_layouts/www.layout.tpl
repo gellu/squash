@@ -8,6 +8,7 @@
 	<script type="text/javascript" src="{$ROOT_WWW}/js/debug.js"></script>
 	<script type="text/javascript" src="{$ROOT_WWW}/js/squash.js"></script>
 	<script type="text/javascript" src="{$ROOT_WWW}/js/jquery.jeditable.js"></script>
+	<script type="text/javascript" src="{$ROOT_WWW}/js/jquery.maskedinput.js""></script>
 	{literal}
 	<script>
 		var ROOT_WWW = '{/literal}{$ROOT_WWW}{literal}';

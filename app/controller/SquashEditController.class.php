@@ -22,7 +22,6 @@ class SquashEditController extends FController
 		
 		$repo = new SquashResultRepository();
 		$result = $repo->getOneBy(array('playerOneId' => $playerOneId, 'playerTwoId' => $playerTwoId, 'playedAt' => $playedAt));
-		
 		if ($result) {
 			$result->scoreOne = $scoreOne;
 			$result->scoreTwo = $scoreTwo;

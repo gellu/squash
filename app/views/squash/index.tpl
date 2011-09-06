@@ -16,7 +16,9 @@
 		</colgroup>
 		
 		<tr>
-			<th></th>
+			<th><img class="ajaxLoader" src="{$ROOT_WWW}/img/ajax-loader.gif" border="0" />
+				<img class="okIcon" src="{$ROOT_WWW}/img/ok_icon.gif">
+			</th>
 			{foreach from=$players item=player key=playerId}
 				<th class="playerName top">{$player->shortName}</th>
 			{/foreach}
@@ -30,14 +32,10 @@
 						{if $playerOneId == $playerTwoId}
 							<span class="ex">X</span>
 						{elseif !$results.$playerOneId.$playerTwoId->scoreOne}
-							<span class="ex">--</span>
+							<input type="text" value="" />
 						{else}
-							<input type="text" value="{$results.$playerOneId.$playerTwoId->scoreOne} : {$results.$playerOneId.$playerTwoId->scoreTwo}">
-							{*<div class=score>
-								<span class="score">{$results.$playerOneId.$playerTwoId->scoreOne}</span>
-								:
-								<span class="score">{$results.$playerOneId.$playerTwoId->scoreTwo}</span>
-							</div>*}
+							<input type="text" value="{$results.$playerOneId.$playerTwoId->scoreOne}:{$results.$playerOneId.$playerTwoId->scoreTwo}">
+							
 						{/if}
 					</td>
 				{/foreach}

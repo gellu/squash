@@ -13,11 +13,17 @@ $(document).ready(function(){
 	   
 	 });
 	
-	$("#squashResults table.results td.result input").focus(function(){
+	$("#squashResults table.results td.result input")
+	.focus(function(){
 		$(this).addClass("active");
-	});
-	
-	$("#squashResults table.results td.result input").blur(function(){
+	})
+	.mask("9:9")
+	.keydown(function(event){
+		if (event.keyCode == 13) {
+			$(this).blur();
+		}
+	})
+	.blur(function(){
 		$(this).removeClass("active");
 		saveResult($(this).parent().attr("id"), $(this).val(), $("#date").val());
 	});
@@ -27,6 +33,10 @@ function saveResult(playersStr, scoreStr, date)
 {
 	var playersArr	= playersStr.split('_');
 	var scoresArr	= scoreStr.split(':');
+	if (!scoresArr[0] || !scoresArr[1]) {
+		return;
+	}
+	
 	$.ajax({
 		  url: ROOT_WWW + '/ajax/squash-edit/save-result',
 		  type: 'POST',
@@ -38,8 +48,14 @@ function saveResult(playersStr, scoreStr, date)
 			  score_two:	 scoresArr[1].trim(),
 			  date:			 date
 		  },
+		  beforeSend: function(){
+			  $("img.ajaxLoader").show();  
+		  },
 		  success: function(){
-			 
+			  $("img.ajaxLoader").hide();
+			  $("img.okIcon").fadeIn('slow').delay(600).fadeOut('slow');
+			  //$("img.okIcon").fadeOut('slow');
+			  
 		  }
 		});
 }
