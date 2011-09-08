@@ -40,6 +40,13 @@ class SquashController extends FController
         return FController::OK;
     }
     
+    /**
+     * pokazuje wyniki dla podaje daty
+     * 
+     * @param string $date
+     * @return string
+     * @return
+     */
     public function showDate($date)
     {
     	$this->requireLogged();
@@ -48,6 +55,20 @@ class SquashController extends FController
     	$this->_getDataForPlayedAtDate($date);
     	$this->setPage('squash/index');
     	
+    	return FController::OK;
+    }
+    
+    
+    public function showRanking()
+    {
+    	$users = $this->_usersRepo->getAll();
+    	$playersRepo = new FRepository('SquashPlayerEntity');
+    	$players = array();
+    	foreach ($users as $user) {
+    		$player = $playersRepo->getById($user->id);
+    		$players[] = $player;
+    	}
+    	var_dump($players);
     	return FController::OK;
     }
     

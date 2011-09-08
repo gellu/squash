@@ -21,11 +21,16 @@ class FRepository extends FBase{
 	 * @var FDB
 	 */
 	protected $_db = null;
+	
+	protected $_entityClassName = null;
 		
 	
-	public function __construct()
+	public function __construct($entityClassName = null)
 	{
 		$this->_db = FLite::getInstance()->getDB();
+		if (!empty($entityClassName)) {
+			$this->_entityClassName = $entityClassName;
+		}
 	}
 	
 	
@@ -130,20 +135,19 @@ class FRepository extends FBase{
 	
 	/**
 	 * zwraca obiekt z bazy danych wg podanego id
+	 * alias dla getOneBy z parametrami array('id' => $id)
 	 * 
-	 * @param integer $id
+	 * @param	integer $id
+	 * @throws	FRepositoryException jesli nie podano dodatniej liczby calkowitej
 	 * @return FEntity
 	 */
 	public function getById($id)
 	{
-		$sql = "SELECT * FROM ".$this->_getTableName()." WHERE id = '".$id."'";
-		$data = $this->_db->getRow($sql);
-		if ($data === null) {
-			return null;
+		if (!is_numeric($id) || (int)$id <= 0) {
+			throw new FRepositoryException("id must be positive integer");
 		}
 		
-		$entityClass = $this->_getEntityClassName();
-		return new $entityClass($data);
+		return $this->getOneBy(array('id' => (int)$id));
 	}
 	
 	/**
@@ -245,8 +249,8 @@ class FRepository extends FBase{
 	 */
 	protected function _getTableName()
 	{
-		$class = get_class($this);
-		$class = str_ireplace('Repository', '', $class);
+		$class = $this->_getEntityClassName();
+		$class = str_ireplace('Entity', '', $class);
 		//wywlamy F z poczatku nazwy klas frameworkowych
 		if (substr($class, 0, 1) == 'F') {
 			$class = substr($class, 1);
@@ -259,13 +263,18 @@ class FRepository extends FBase{
 	}
 	
 	/**
-	 * zwraca nazwe klase encji dla uzywaneho wlasnie repozytorium
-	 * nazwa klasy wyznaczana jest przez podmiane Repository na Entity
+	 * zwraca nazwe klase encji dla uzywanego wlasnie repozytorium
+	 * jesli zostala podana, zwraca nazwe encji podana w konstruktorze,  
+	 * jesli nie nazwa klasy wyznaczana jest przez podmiane Repository na Entity
 	 */
 	protected function _getEntityClassName()
 	{
-		$class = get_class($this);
-		$class = str_ireplace('Repository', 'Entity', $class);
+		if (isset($this->_entityClassName)) {
+			return $this->_entityClassName;
+		} else {
+			$class = get_class($this);
+			$class = str_ireplace('Repository', 'Entity', $class);
+		}
 		
 		return $class;
 	}

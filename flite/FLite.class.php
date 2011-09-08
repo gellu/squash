@@ -61,15 +61,15 @@ class FLite
     		}
     	} elseif (stristr($className, 'controller')) {
             include (ROOT_DIR.'/app/controller/'.$className.'.class.php');
-    	} elseif (stristr($className, 'lib')) {
-            include (ROOT_DIR.'/app/lib/'.$className.'.class.php');
     	} elseif (stristr($className, 'entity')) {
             include (ROOT_DIR.'/app/entity/'.$className.'.class.php');
 		} elseif (stristr($className, 'repository')) {
 			include (ROOT_DIR.'/app/repository/'.$className.'.class.php');
         } elseif (stristr($className, 'helper')) {
         	include (ROOT_DIR.'/app/helper/'.$className.'.class.php');
-        }    
+        } else {
+        	include (ROOT_DIR.'/app/library/'.$className.'.class.php');
+        }   
         
     }
     

@@ -74,6 +74,7 @@ class FEntity extends FBase{
 	public function __construct(array $data = array()) 
 	{
 		$this->_state = self::STATE_NEW;
+		
 		if (!empty($data)) {
 			$this->_state = self::STATE_INITIALIZATION;
 			$this->fillFromArray($data);
@@ -87,7 +88,7 @@ class FEntity extends FBase{
 	 * @param array $array
 	 * @param boolean $initial [optional] czy jest to pierwsze wypelnienie obiektu (false w przypadku modyfikowania obiektu)
 	 */
-	public function fillFromArray($array, $initial = false)
+	public function fillFromArray(array $array)
 	{
 		$stringHelper = new FStringHelper();
 		foreach ($array as $key => $val)
@@ -142,7 +143,6 @@ class FEntity extends FBase{
 		if (method_exists($this, 'set'.ucfirst($fieldName))) {
 			return call_user_method('set'.ucfirst($fieldName), $this, $val);
 		}
-		
 		if (property_exists($this, $fieldName)){
     		$this->$fieldName = $val;
     		if ($this->_state != self::STATE_INITIALIZATION) {
