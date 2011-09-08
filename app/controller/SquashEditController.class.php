@@ -8,7 +8,6 @@ class SquashEditController extends FController
 	{
 		parent::__construct();
 		$this->_squashResultRepo = new SquashResultRepository();
-		$this->_usersRepo = new FUserRepository();
 	}
 	
 	public function saveResult()
@@ -21,7 +20,7 @@ class SquashEditController extends FController
 		$scoreTwo = $_POST['score_two'];
 		
 		$repo = new SquashResultRepository();
-		$result = $repo->getOneBy(array('playerOneId' => $playerOneId, 'playerTwoId' => $playerTwoId, 'playedAt' => $playedAt));
+		$result = $this->_squashResultRepo->getOneBy(array('playerOneId' => $playerOneId, 'playerTwoId' => $playerTwoId, 'playedAt' => $playedAt));
 		if ($result) {
 			$result->scoreOne = $scoreOne;
 			$result->scoreTwo = $scoreTwo;
