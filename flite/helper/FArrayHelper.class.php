@@ -11,7 +11,7 @@ class FArrayHelper {
 	 * @param boolean $withUndescorePrefix czy zwracane klucze maja byc poprzedzone podkreslnikiem
 	 * @return
 	 */
-    public function keysFromCamelCase(array $array, $withUndescorePrefix = true)
+    public function keysFromCamelCase(array $array)
     {
     	$tmp = array();
     	$stringHelper = new FStringHelper();
@@ -23,5 +23,6 @@ class FArrayHelper {
     	return $tmp;
     	
     }
+    
 }
 ?>

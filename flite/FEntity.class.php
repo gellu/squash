@@ -262,10 +262,37 @@ class FEntity extends FBase{
      */
     public function getModifiedFieldNames()
     {
-    	return $this->_modifiedFields;
+    	return array_keys($this->_modifiedFields);
     }
     
+    /**
+    * tworzy encje rodzica dla podanej encji (rozszerzajacej encje inna niz podstawowa FEntity)
+    *
+    * @throws FEntityException jesli podana encja rozszerza tylko FEntity
+    * @return FEntity
+    */
+    public function createParentEntity()
+    {
+    	$parentClass	= get_parent_class($this);
+    	if ($parentClass == 'FEntity') {
+    		throw new FEntityException("you cannot create parent Entity for entity extending only FEntity");
+    	}
     
+    	$entityData		= $this->toArray();
+    	$arrayHelper	= new FArrayHelper();
+    	$stringHelper	= new FStringHelper();
+    	//pobieramy pola rodzica,
+    	//zeby z danych dziecka wybrac tylko te, ktore sa potrzebne do stworzenia rodzica
+    	$parentFieldNames	= $this->getEntityParentFieldNames();
+    	$parentFieldsAsKeys	= array_flip($parentFieldNames);
+    	$parentFieldsAsKeys = $arrayHelper->keysFromCamelCase($parentFieldsAsKeys);
+    	//z danych dziecka zostawiamy tylko te, ktore sa rowniez danymi rodzica
+    	$parentData	= array_intersect_key($entityData, $parentFieldsAsKeys);
+    	//tworzymy instancje repo rodzica i zapisujemy do db
+    	$parentEntity	= new $parentClass($parentData);
+    
+    	return $parentEntity;
+    }
     
     
     

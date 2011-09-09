@@ -76,18 +76,22 @@ class SquashController extends FController
     {
     	$usersRepo = new FRepository('SquashPlayerEntity');
     	$karolArr = array (
-    			'id'		=>	'22',
-    			'name'		=>	'Karol3',
-    			'short_name'=>	'KT3',
-    			'email'		=>	'kt3@goldenline.pl',
+    			'id'		=>	'23',
+    			'name'		=>	'Karol4',
+    			'short_name'=>	'KT4',
+    			'email'		=>	'kt4@goldenline.pl',
     			'pass'		=>	md5('1234'),
     			'ranking'	=>	1200	
     	);
     	
     	$karol = new SquashPlayerEntity($karolArr);
-    	$karol->name = 'Karol31';
-    	$karol->ranking = 1201;
+    	$karol->name = 'Karol41';
+    	$karol->ranking = 1204;
     	$usersRepo->save($karol);
+    	
+    	
+    	$user = $usersRepo->getOneBy(array('email' => 'karol@goldenline.pl')) ;
+    	var_dump($user);
     	
     	return FController::OK;
     }
