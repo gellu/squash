@@ -1,6 +1,14 @@
 <?php
 /**
-* 
+ * klasa wyjatkow rzucanych przez FDB
+ * @author karol
+ *
+ */
+class FDBException extends FBaseException {}
+
+
+/**
+* klasa do komunikacji z baza danych 
 */
 class FDB extends FBase
 {
@@ -9,6 +17,7 @@ class FDB extends FBase
     private $_rowsAffected = null;
     private $_lastInsertId = null;
     private $_lastResult = null;
+    private $_lastError = null;
     private $_exec_time = 0;
     
     public function __construct()
@@ -21,6 +30,15 @@ class FDB extends FBase
             
     }    
     
+    /**
+     * wykonuje zapytanie do db
+     * ustawia this->_lastResult (dla selecta) i this->_lastInsertId dla insertow i replacow
+     * zapytania logowane sa do plikow i dumpowane do FDebug
+     * 
+     * @param	string $sql
+     * @throws	FDBException w przypadku niepowodzenia wykonania sqlki
+     * @return	mixed w przypadku selecta zwraca wynik zapytania, w pozostalych przypadkach zwraca true
+     */
     public function query($sql)
     {
         $this->_queriesCounter++;
@@ -32,29 +50,32 @@ class FDB extends FBase
         $this->_rowsAffected = null;
         
         $start = microtime(true);
-        $q = mysql_query($sql);
+        $q = mysql_query($sql, $this->_conn);
+        
         $executionTime = (microtime(true) - $start);
         $this->_exec_time += $executionTime; 
         
         $this->_logQuery($sql, $executionTime);
-        
-        if (!$q) {
-            return null;
+        if (mysql_errno($this->_conn) !== 0) {
+        	$this->_lastError = mysql_error($this->_conn);
+        	throw new FDBException("query ".$sql." failed, error: ".$this->_lastError);
         }
+        
         if ($qryType == "select")
         {
             $res = array();
-            while ($row = mysql_fetch_assoc($q))
+            while ($row = mysql_fetch_assoc($q)) {
                 $res[] = $row;
+            }
             $this->_lastResult = $res;
             return $this->_lastResult;
         }
         else
         {
             $this->_rowsAffected = mysql_affected_rows($this->_conn);
-            if ($qryType == "insert" || $qryType == "replace")
+            if ($qryType == "insert" || $qryType == "replace") {
                 $this->_lastInsertId = mysql_insert_id($this->_conn);
-                
+            }    
             return true;
         }
     }

@@ -32,5 +32,7 @@ define('CONTROLLER_MAIN', 'Main');
 define('METHOD_MAIN', 'index');
 
 define('DEBUG', true);
+
 require_once ROOT_DIR . "/flite/FLite.class.php";
+require_once ROOT_DIR . "/flite/FBase.class.php";
 ?>

@@ -33,4 +33,5 @@ define('METHOD_MAIN', 'index');
 
 define('DEBUG', false);
 require_once ROOT_DIR . "/flite/FLite.class.php";
+require_once ROOT_DIR . "/flite/FBase.class.php";
 ?>

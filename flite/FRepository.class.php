@@ -48,26 +48,17 @@ class FRepository extends FBase{
 			return $this->update($entity);
 		}
 		
-		$table = $this->_getTableName();
-		$entityFields	= $entity->getEntityFieldNames($withId = false);
-		$fieldsToSave	= array();
-		$stringHelper	= new FStringHelper();
 		
-		foreach ($entityFields as $field)
-		{
-			$field	 = (substr($field,0,1) == '_') ? substr($field,1) : $field;
-			$dbField = $stringHelper->fromCamelCase($field);
-			if ($field == 'createdAt' && is_null($entity->$field)) {
-				//z automatu ustawiamy createdAt
-				$fieldsToSave[$dbField] = 'NOW()';
-			} else {
-				//zamieniamy array na jsona, escapujemy i pakujemy w ciapki
-				$value = is_array($entity->$field) ? json_encode($entity->$field) : $entity->$field;
-				$value = $this->_db->escape($value);
-				$fieldsToSave[$dbField] = "'" . $value . "'";
-			}
+		if (get_parent_class($entity) != 'FEntity') {
+			$entityFields = $this->_saveParent($entity);
+		} else {
+			$entityFields = $entity->getEntityFieldNames();
 		}
 		
+		$fieldsToSave = $this->_buildFieldsToSave($entity, $entityFields);
+		
+		
+		$table = $this->_getTableName();
 		$type	= $replace ? "REPLACE" : "INSERT";
 		$q		= sprintf("$type INTO $table (%s) VALUES (%s)", implode(',', array_keys($fieldsToSave)), implode(',', array_values($fieldsToSave)));
 		
@@ -78,6 +69,70 @@ class FRepository extends FBase{
 		} else {
 			throw new FRepositoryException("saving to ".$table." failed: " . $q);
 		}
+	}
+	
+	/**
+	 * buduje tablice z danymi do zapisania array('nazwa_pola_w_db' => wartosc)
+	 * 
+	 * @param FEntity $entity
+	 * @param array $entityFields
+	 * @return array
+	 */
+	private function _buildFieldsToSave(FEntity $entity, $entityFields)
+	{
+		$fieldsToSave	= array();
+		$stringHelper	= new FStringHelper();
+		
+		foreach ($entityFields as $field)
+		{
+			$field	 = (substr($field,0,1) == '_') ? substr($field,1) : $field;
+			$dbField = $stringHelper->fromCamelCase($field);
+			if ($field == 'createdAt' && is_null($entity->$field)) {
+				//z automatu ustawiamy createdAt
+				$entity->$field = date("Y-m-s H:i:s");
+				$fieldsToSave[$dbField] = 'NOW()';
+			} else {
+				//zamieniamy array na jsona, escapujemy i pakujemy w ciapki
+				$value = is_array($entity->$field) ? json_encode($entity->$field) : $entity->$field;
+				$value = $this->_db->escape($value);
+				$fieldsToSave[$dbField] = "'" . $value . "'";
+			}
+		}
+		
+		return $fieldsToSave;
+	}
+	
+	/**
+	 * zapisuje dane o obiekcie z ktorego dziedziczy nasza encja,
+	 * np dla SquashPlayer zapisuje dane o FUser
+	 * po zapisie do bazy, ustawia atrybut id
+	 * 
+	 * 
+	 * @param FEntity $entity
+	 * @return array tablica pol ktore zostaja do zapisania w encji podstawowej
+	 */
+	private function _saveParent(FEntity $entity)
+	{
+		$entityData		= $entity->toArray();
+		$arrayHelper	= new FArrayHelper();
+		//pobieramy pola rodzica,
+		//zeby z danych dziecka wybrac tylko te, ktore sa potrzebne do stworzenia rodzica
+		$parentFieldNames	= $entity->getEntityParentFieldNames();
+		$parentFieldsAsKeys	= array_flip($parentFieldNames);
+		$parentFieldsAsKeys = $arrayHelper->keysFromCamelCase($parentFieldsAsKeys, false);
+		//z danych dziecka zostawiamy tylko te, ktore sa rowniez danymi rodzica
+		$parentData	= array_intersect_key($entityData, $parentFieldsAsKeys);
+		//tworzymy instancje repo rodzica i zapisujemy do db
+		$parentClass	= get_parent_class($entity);
+		$parentEntity	= new $parentClass($parentData);
+		$parentRepo		= new FRepository($parentClass);
+		$parentRepo->save($parentEntity);
+		//id rodzica jest jednoczesnie id dziecka (relacja 1 do 1)
+		$entity->id		= $parentEntity->id;
+		//ze wszystkich danych dziecka, oddzielnie zapisane sa tylko te, ktore nie sa danymi rodzica
+		$entityFields	= array_diff($entity->getEntityFieldNames(), $parentFieldNames);
+		
+		return $entityFields;
 	}
 	
 	public function delete()

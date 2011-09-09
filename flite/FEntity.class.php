@@ -125,7 +125,7 @@ class FEntity extends FBase{
 			//wycinamy poczatkowy podkreslnik
 			$field = (substr($field,0,1) == '_') ? substr($field,1) : $field;
 			$field = $stringHelper->fromCamelCase($field);
-			$arr[$field] = $v;
+			$arr[$field] = $value;
 		}
 		
 		return $arr;
@@ -199,17 +199,60 @@ class FEntity extends FBase{
      */
     public function getEntityFieldNames($withId = true)
     {
-    	$allFieldNames = array_keys(get_object_vars($this));
-    	$allFieldNamesT = array_flip($allFieldNames);
+    	$variablesList = get_object_vars($this);
+    	return $this->_getClearFieldNames($variablesList, $withId);
+    }
+    
+    /**
+     * zwraca nazwy pol rodzica encji (z pominieciem _modifiedFields i _state)
+     * 
+     * @param boolean $withId
+     * @return array
+     */
+    public function getEntityParentFieldNames($withId = false)
+    {
+    	$variablesList = get_class_vars(get_parent_class($this));
+    	return $this->_getClearFieldNames($variablesList, $withId);
+    }
+    
+    /**
+     * na podstawie listy pol/zmiennych, zwraca liste pol encji 
+     * 
+     * @param array $variablesList
+     * @param boolean $withId
+     * @return array
+     */
+    private function _getClearFieldNames($variablesList, $withId)
+    {
+    	$fieldNames = array_keys($variablesList);
     	
+    	/*
+    	$dbFields = array();
+    	$stringHelper	= new FStringHelper();
+    	foreach ($variablesList as $name => $value) {
+    		if ($name == '_modifiedFields' || $name == '_state') {
+    			continue;
+    		}
+    		
+    		if ($name == '_id' && !$withId) {
+    			continue;
+    		}
+    		
+    		$field	 = (substr($name,0,1) == '_') ? substr($name,1) : $name;
+    		$dbField = $stringHelper->fromCamelCase($field);
+    		$dbFields[] = $dbField;
+    	}
+    	*/
+    	
+    	$allFieldNamesT = array_flip($fieldNames);
+    	 
     	//wywala niepotrzebne pola
     	unset($allFieldNamesT['_modifiedFields'], $allFieldNamesT['_state']);
     	if (!$withId) {
     		unset($allFieldNamesT['_id']);
     	}
-    	
+    	 
     	return array_flip($allFieldNamesT);
-    	
     }
     
     /**

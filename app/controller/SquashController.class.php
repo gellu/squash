@@ -72,6 +72,26 @@ class SquashController extends FController
     	return FController::OK;
     }
     
+    public function tryPlayer()
+    {
+    	$usersRepo = new FRepository('SquashPlayerEntity');
+    	$karolArr = array (
+    			'id'		=>	'22',
+    			'name'		=>	'Karol3',
+    			'short_name'=>	'KT3',
+    			'email'		=>	'kt3@goldenline.pl',
+    			'pass'		=>	md5('1234'),
+    			'ranking'	=>	1200	
+    	);
+    	
+    	$karol = new SquashPlayerEntity($karolArr);
+    	$karol->name = 'Karol31';
+    	$karol->ranking = 1201;
+    	$usersRepo->save($karol);
+    	
+    	return FController::OK;
+    }
+    
     /**
      * pobiera wyniki dla podanej daty i ustawia do smrtow dane dot. wynikow i graczy
      * 
