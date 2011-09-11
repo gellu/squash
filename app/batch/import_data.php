@@ -84,7 +84,7 @@ function saveResult($playerOne, $playerTwo, $scoreOne, $scoreTwo, $playedAt)
  */
 function importUsers()
 {
-	$usersRepo = new FUserRepository();
+	$usersRepo = new FRepository('SquashPlayerEntity');
 	
 	
 	$karolArr = array (
@@ -93,7 +93,7 @@ function importUsers()
 		'email'		=>	'karol@goldenline.pl',
 		'pass'		=>	md5('1234')	
 	);
-	$karol = new FUserEntity($karolArr);
+	$karol = new SquashPlayerEntity($karolArr);
 	$usersRepo->save($karol);
 	
 	$grzesiekArr = array (
@@ -102,7 +102,7 @@ function importUsers()
 			'email'		=>	'grzegorz.krysiak@goldenline.pl',
 			'pass'		=>	md5('1234')	
 	);
-	$grzesiek = new FUserEntity($grzesiekArr);
+	$grzesiek = new SquashPlayerEntity($grzesiekArr);
 	$usersRepo->save($grzesiek);
 	
 	$jacekArr = array (
@@ -111,7 +111,7 @@ function importUsers()
 			'email'		=>	'jacek.perkowski@goldenline.pl',
 			'pass'		=>	md5('1234')	
 	);
-	$jacek = new FUserEntity($jacekArr);
+	$jacek = new SquashPlayerEntity($jacekArr);
 	$usersRepo->save($jacek);
 	
 	$pakitaArr = array (
@@ -120,7 +120,7 @@ function importUsers()
 			'email'		=>	'pakita.majewska@goldenline.pl',
 			'pass'		=>	md5('1234')	
 	);
-	$pakita = new FUserEntity($pakitaArr);
+	$pakita = new SquashPlayerEntity($pakitaArr);
 	$usersRepo->save($pakita);
 	
 	$lucekArr = array (
@@ -129,7 +129,7 @@ function importUsers()
 			'email'		=>	'lucjan.samulowski@goldenline.pl',
 			'pass'		=>	md5('1234')	
 	);
-	$lucek = new FUserEntity($lucekArr);
+	$lucek = new SquashPlayerEntity($lucekArr);
 	$usersRepo->save($lucek);
 	
 	$konradArr = array (
@@ -138,7 +138,7 @@ function importUsers()
 			'email'		=>	'konrad.jarowski@goldenline.pl',
 			'pass'		=>	md5('1234')	
 	);
-	$konrad = new FUserEntity($konradArr);
+	$konrad = new SquashPlayerEntity($konradArr);
 	$usersRepo->save($konrad);
 	
 	$miloszArr = array (
@@ -147,7 +147,7 @@ function importUsers()
 				'email'		=>	'milosz.ryniecki@goldenline.pl',
 				'pass'		=>	md5('1234')	
 	);
-	$milosz = new FUserEntity($miloszArr);
+	$milosz = new SquashPlayerEntity($miloszArr);
 	$usersRepo->save($milosz);
 	
 	$kamilArr = array (
@@ -156,7 +156,7 @@ function importUsers()
 					'email'		=>	'',
 					'pass'		=>	md5('1234')	
 	);
-	$kamil = new FUserEntity($kamilArr);
+	$kamil = new SquashPlayerEntity($kamilArr);
 	$usersRepo->save($kamil);
 	
 	$ret = array (

@@ -37,23 +37,11 @@ class FArrayHelper {
     	if (empty($array)) {
     		return $array;
     	}
-    	//jesli pierwszy element jest tablica, to zakladamy ze wszystkie sa tablica
-    	//jesli nie, to zakladamy ze wszystkie sa obiektami
-    	$arrayOfObjects = is_array(reset($array)) ? false : true;
-    	$firstElement = reset($array);
     	
-    	if (is_object($firstElement)) {
-    		$arrayOfObjects = true;
-    	} elseif (is_array($firstElement)) {
-    		$arrayOfObjects = false;
-    	} else {
-    		throw new FBaseException("first argument has to be an array of arrays or objects");
-    	}
-    	
-    	
+    	$isArrayOfObjects = $this->_isArrayOfObjectsOrArrays($array);
     	$sortCol = array();
     	foreach ($array as $element) {
-    		if ($arrayOfObjects) {
+    		if ($isArrayOfObjects) {
     			$sortCol[] = $element->$fieldName;
     		} else {
     			if (!isset($element[$fieldName])) {
@@ -69,9 +57,64 @@ class FArrayHelper {
     }
     
     
-    public function indexObjectsByField(array $array, $fieldName, $allowManyValuesToOneKey = false)
+    /**
+     * indexuje tablice wg podanego pola (indeks tablicy lub pole obiektu)
+     * jesli $onlyOneValuePerKey ustawione jest na false, pole zwracanej tablicy array[$fieldName] bedzie tablica elementow
+     * 
+     * @param array $array
+     * @param string $fieldName
+     * @param boolean $onlyOneValuePerKey
+     * @throws FBaseException jesli przekazano tablice tablic i jedna z nich nie ma pola z indeksem $fieldName
+     * @return array
+     */
+    public function indexByField(array $array, $fieldName, $onlyOneValuePerKey = true)
     {
+    	if (empty($array)) {
+    		return array();
+    	}
     	
+    	$isArrayOfObjects = $this->_isArrayOfObjectsOrArrays($array);
+    	$arrayCopy = array();
+    	foreach ($array as $element) {
+    		if ($isArrayOfObjects) {
+    			$key = $element->$fieldName;
+    		} else {
+    			if (!isset($element[$fieldName])) {
+    				throw new FBaseException("one of the arrays has no field for ".$fieldName);
+    			}
+    			$key = $element[$fieldName];
+    		}
+    		
+    		if ($onlyOneValuePerKey) {
+    			$arrayCopy[$key] = $element;
+    		} else {
+    			$arrayCopy[$key][] = $element;
+    		}
+    	}
+    	
+    	return $arrayCopy;
+    }
+    
+    /**
+     * "szacuje" czy podana tablica jest tablica obiektow lub tablic
+     * sprawdzenie odbywa sie sie przez sprawdzenie typu pierwszego elementu
+     * 
+     * @param	array $array
+     * @throws	FBaseException jesli pierwszy element nie jest ani obiektem ani tablica
+     * @return	boolean
+     */
+    private function _isArrayOfObjectsOrArrays($array)
+    {
+    	//jesli pierwszy element jest tablica, to zakladamy ze wszystkie sa tablica
+    	//jesli pierwszy jest obiektem, to zakladamy ze wszystkie sa obiektami
+    	$firstElement = reset($array);
+    	if (is_object($firstElement)) {
+    		return true;
+    	} elseif (is_array($firstElement)) {
+    		return false;
+    	} else {
+    		throw new FBaseException("first argument has to be an array of arrays or objects");
+    	}
     }
     
 }
