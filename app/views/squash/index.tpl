@@ -1,4 +1,4 @@
-<div id="squashResults">
+<div id="squashResults" class="squashContent">
 	<input type="hidden" id="date" name="date" value="{$date}">
 		<p class="date">
 			<span class="prev">{if $prevDate}&laquo; <a href="{$ROOT_WWW}/squash/show-date/{$prevDate}">{$prevDate}</a>{/if}&nbsp;</span>

@@ -325,10 +325,9 @@ class FRepository extends FBase{
 		$sql	= "SELECT * FROM ".$this->_getTableName();
 		$parentClass = get_parent_class($this->_getEntityClassName());
 		if ($parentClass != 'FEntity') {
-			$sql .= " JOIN ".$this->_getTableName($parentClass)." USING (id)"; 
+			$sql .= " RIGHT JOIN ".$this->_getTableName($parentClass)." USING (id)"; 
 		}
 		$sql	.= (!empty($conditions)) ? " WHERE ".implode(' AND ', $conditionsStr) : "";
-		echo $sql;
 		return $sql;
 	}
 	

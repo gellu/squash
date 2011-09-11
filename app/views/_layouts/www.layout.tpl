@@ -22,7 +22,7 @@
 
 {if $currentUser}
 	<div id="bar">
-		{$currentUser->name} <a href="./main/logout">logout</a>
+		{$currentUser->name} <a href="{$ROOT_WWW}/main/logout">logout</a>
 	</div>
 {/if}
 

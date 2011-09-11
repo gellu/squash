@@ -31,9 +31,7 @@ class SquashController extends FController
     {
     	$this->requireLogged();
         
-    	//$user = FLite::getInstance()->getAuthManager()->getCurrentUser();
-
-		$lastDate	= $this->_squashResultRepo->getLastPlayedDate();
+    	$lastDate	= $this->_squashResultRepo->getLastPlayedDate();
 		$this->_getDataForPlayedAtDate($lastDate);
 		
 		
@@ -51,7 +49,6 @@ class SquashController extends FController
     {
     	$this->requireLogged();
     	
-
     	$this->_getDataForPlayedAtDate($date);
     	$this->setPage('squash/index');
     	
@@ -59,41 +56,22 @@ class SquashController extends FController
     }
     
     
-    public function showRanking()
+    public function ranking()
     {
-    	$users = $this->_usersRepo->getAll();
+    	$this->requireLogged();
+    	
     	$playersRepo = new FRepository('SquashPlayerEntity');
-    	$players = array();
-    	foreach ($users as $user) {
-    		$player = $playersRepo->getById($user->id);
-    		$players[] = $player;
-    	}
-    	var_dump($players);
+    	$players	 = $playersRepo->getAll();
+    	$arrayHelper = new FArrayHelper();
+    	$players	 = $arrayHelper->sortByField($players, 'ranking', SORT_DESC);
+    	$this->assign("players", $players);
+    	
     	return FController::OK;
     }
     
-    public function tryPlayer()
+    public function tryRanking()
     {
-    	$usersRepo = new FRepository('SquashPlayerEntity');
-    	$karolArr = array (
-    			'id'		=>	'23',
-    			'name'		=>	'Karol4',
-    			'short_name'=>	'KT4',
-    			'email'		=>	'kt4@goldenline.pl',
-    			'pass'		=>	md5('1234'),
-    			'ranking'	=>	1200	
-    	);
     	
-    	$karol = new SquashPlayerEntity($karolArr);
-    	$karol->name = 'Karol41';
-    	$karol->ranking = 1204;
-    	$usersRepo->save($karol);
-    	
-    	
-    	$user = $usersRepo->getOneBy(array('email' => 'karol@goldenline.pl')) ;
-    	var_dump($user);
-    	
-    	return FController::OK;
     }
     
     /**
