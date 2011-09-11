@@ -1,4 +1,8 @@
 <div id="squashRanking" class="squashContent">
+	<div class="title">
+		<h1>Ranking</h1>
+		<span>z dnia 09/11/2011</span>
+	</div>
 	<ul>
 	{foreach from=$players item=player key=key}
 		<li class="position_{$key+1}">

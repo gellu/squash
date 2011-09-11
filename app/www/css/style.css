@@ -33,11 +33,11 @@ body
 #Content 
 {
 	margin:0px auto; /* Right and left margin widths set to "auto" */
-	padding:50px;
+	padding:20px;
 	width:980px;
 	
 	background-color:#fff;
-	border: 1px solid #808080;
+	/*border: 1px solid #eee;*/
 }
 
 #message
@@ -91,6 +91,10 @@ div.cl
 #squashResults table.results td.result span.colon {background-color:#fff}
 
 #squashRanking {font-size: 14px;margin-left: 200px;}
+#squashRanking div.title {margin-left:130px;margin-bottom:40px;}
+#squashRanking div.title h1 {margin-bottom:-4px; font-size:25px; font-weight:bold; color: #142524;margin-top:23px;}
+#squashRanking div.title span {color: #ddd;font-size:15px;}
+
 #squashRanking li {list-style: none;margin-bottom: 10px;}
 #squashRanking li span.position {float:left; width: 30px; text-align:right; margin-right:20px;}
 #squashRanking li span.player {float:left; width: 170px; text-align:left; margin-right:20px;}
