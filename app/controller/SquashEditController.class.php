@@ -4,6 +4,8 @@
 */
 class SquashEditController extends FController
 {
+	private $_squashResultRepo;
+	
 	public function __construct()
 	{
 		parent::__construct();
@@ -19,24 +21,13 @@ class SquashEditController extends FController
 		$scoreOne = $_POST['score_one'];
 		$scoreTwo = $_POST['score_two'];
 		
-		$repo = new SquashResultRepository();
-		$result = $this->_squashResultRepo->getOneBy(array('playerOneId' => $playerOneId, 'playerTwoId' => $playerTwoId, 'playedAt' => $playedAt));
-		if ($result) {
-			$result->scoreOne = $scoreOne;
-			$result->scoreTwo = $scoreTwo;
-		} else {
-			$data = array (
-				'playedAt'		=>	$playedAt,
-				'playerOneId'	=>	$playerOneId,
-				'playerTwoId'	=>	$playerTwoId,
-				'scoreOne'		=>	$scoreOne,
-				'scoreTwo'		=>	$scoreTwo
-			);
-			$result = new SquashResultEntity($data);
-		}
+		//tworzymy wyniki w obie strony
+		$result1 = $this->_prepareResultObject($playerOneId, $playerTwoId, $playedAt, $scoreOne, $scoreTwo);
+		$result2 = $this->_prepareResultObject($playerTwoId, $playerOneId, $playedAt, $scoreTwo, $scoreOne);
 		
 		try {
-			$repo->save($result);
+			$this->_squashResultRepo->save($result1);
+			$this->_squashResultRepo->save($result2);
 			$this->setPage('ajax/default');
 			return FController::OK;
 		} catch (Exception $e) {
@@ -44,6 +35,36 @@ class SquashEditController extends FController
 			return FController::ERR;
 		}
 		
+	}
+	
+	/**
+	 * przygotowuje obiekt encji z wynikiem meczu - pobiera go z bazy (i aktualizuje pola wynikow) lub tworzy nowy
+	 * 
+	 * @param int $playerOneId
+	 * @param int $playerTwoId
+	 * @param string $playedAt
+	 * @param int $scoreOne
+	 * @param int $scoreTwo
+	 * @return SquashResultEntity
+	 */
+	private function _prepareResultObject($playerOneId, $playerTwoId, $playedAt, $scoreOne, $scoreTwo)
+	{
+		$result = $this->_squashResultRepo->getOneBy(array('playerOneId' => $playerOneId, 'playerTwoId' => $playerTwoId, 'playedAt' => $playedAt));
+		if ($result) {
+			$result->scoreOne = $scoreOne;
+			$result->scoreTwo = $scoreTwo;
+		} else {
+			$data = array (
+						'playedAt'		=>	$playedAt,
+						'playerOneId'	=>	$playerOneId,
+						'playerTwoId'	=>	$playerTwoId,
+						'scoreOne'		=>	$scoreOne,
+						'scoreTwo'		=>	$scoreTwo
+			);
+			$result = new SquashResultEntity($data);
+		}
+		
+		return $result;
 	}
 }
 

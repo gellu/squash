@@ -72,9 +72,11 @@ div.cl
 .ajaxLoader, .okIcon {display:none;} 
 .squashContent {font: normal normal normal 76%/normal Verdana, sans-serif; color: #696969; }
 
-#squashResults p.date {font-size:23px; font-weight:bold; color: #142524; margin-left:200px;}
-#squashResults p.date span {padding-left:10px; padding-right:10px; font-size:10px;}
-#squashResults p.date span a {color: #45525b}
+#squashResults div.date {font-size:23px; font-weight:bold; color: #142524; margin-left:200px;margin-top:20px;}
+#squashResults div.date span {padding-left:10px; padding-right:10px; font-size:10px;}
+#squashResults div.date span a {color: #45525b}
+
+#squashResults div.today {margin-left:410px;font-size: 14px;height:20px;}
 
 #squashResults p.editInfo {margin: 30px 300px 0px;display:block;float:right; color:#c0c0c0}
 #squashResults table.results {text-align:center; margin-left: 200px; border-collapse:collapse;}

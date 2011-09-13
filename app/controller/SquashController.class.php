@@ -87,6 +87,10 @@ class SquashController extends FController
      */
     private function _getDataForPlayedAtDate($date)
     {
+    	if (strtotime($date) === false) {
+    		throw new Exception("wrong date format");
+    	}
+    	
     	list($prevDate, $nextDate) = $this->_squashResultRepo->getNeighbouringDates($date);
     	
     	//$results	= $this->_squashResultRepo->getResultsPlayedAt($date);
@@ -98,7 +102,7 @@ class SquashController extends FController
 	    		$resultsByPlayers[$result->playerOneId][$result->playerTwoId] = $result;
 	    	}
     	}
-    	
+    	//var_dump($results);
     	$players = array();
     	$allPlayers = $this->_usersRepo->getAll();
     	foreach ($allPlayers as $player) {
