@@ -7,8 +7,9 @@ $flite->setMode(FLite::MODE_BATCH);
 
 $rankingRepo = new SquashRankingStateRepository();
 $resultsRepo = new SquashResultRepository();
+$playersRepo = new FRepository('SquashPlayerEntity');
 
-$rankingBuilder = new SquashRankingBuilder($rankingRepo, $resultsRepo);
+$rankingBuilder = new SquashRankingBuilder($rankingRepo, $resultsRepo, $playersRepo);
 $rankingBuilder->computeAll();
 /*
 

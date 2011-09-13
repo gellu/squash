@@ -47,7 +47,6 @@ function importResults($users)
 
 function saveResult($playerOne, $playerTwo, $scoreOne, $scoreTwo, $playedAt)
 {
-	//var_dump($playedAt);
 	$playedAt = strtotime($playedAt);
 	$playedAt = date("Y-m-d", $playedAt);
 	//var_dump($playedAt);
@@ -90,7 +89,7 @@ function importUsers()
 	$karolArr = array (
 		'name'		=>	'Karol',
 		'short_name'=>	'KT',
-		'email'		=>	'karol@goldenline.pl',
+		'email'		=>	'karol10@goldenline.pl',
 		'pass'		=>	md5('1234')	
 	);
 	$karol = new SquashPlayerEntity($karolArr);

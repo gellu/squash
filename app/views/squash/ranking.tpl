@@ -1,7 +1,7 @@
 <div id="squashRanking" class="squashContent">
 	<div class="title">
 		<h1>Ranking</h1>
-		<span>z dnia 09/11/2011</span>
+		<span>z dnia {$date}</span>
 	</div>
 	<ul>
 	{foreach from=$players item=player key=key}

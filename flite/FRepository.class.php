@@ -62,7 +62,10 @@ class FRepository extends FBase{
 		$q		= sprintf("$type INTO $table (%s) VALUES (%s)", implode(',', array_keys($fieldsToSave)), implode(',', array_values($fieldsToSave)));
 		if ($this->_db->query($q))
 		{
-			$entity->id = $this->_db->getLastInsertId();
+			//moglo zostac ustawione przy zapisywaniu parenta
+			if (!$entity->id) {
+				$entity->id = $this->_db->getLastInsertId();
+			}
 			return true;
 		} else {
 			throw new FRepositoryException("saving to ".$table." failed: " . $q);
@@ -180,7 +183,15 @@ class FRepository extends FBase{
 		
 		//ze wszystkich zmodyfikowanych pol encji bierzemy tylko te nalezace do encji rodzica
 		$parentModifiedFields = array_intersect($modifiedFields, $parentFieldNames);
-		$parentRepo->update($parentEntity, $parentModifiedFields);
+		//w linii 178 ustawiamy id parenta, ale nie chcemy zeby id bylo na liscie zmodyfikowanych pol
+		if (($k = array_search('_id', $parentModifiedFields)) !== false) {
+			unset($parentModifiedFields[$k]);
+		}
+		
+		//zapsisujemy nowe dane rodzica
+		if (!empty($parentModifiedFields)) {
+			$parentRepo->update($parentEntity, $parentModifiedFields);
+		}
 		//ze wszystkich danych dziecka, oddzielnie zapisane sa tylko te, ktore nie sa danymi rodzica
 		$childModifiedFields	= array_diff($modifiedFields, $parentFieldNames);
 	
@@ -197,6 +208,9 @@ class FRepository extends FBase{
 	 */
 	private function _buildFieldsToUpdate(FEntity $entity, array $modifiedFields)
 	{
+		if (($k = array_search('_id', $modifiedFields)) !== false) {
+			unset($modifiedFields[$k]);
+		}
 		if (empty($modifiedFields)) {
 			throw new FRepositoryException("no field was modified");
 		}
@@ -204,13 +218,11 @@ class FRepository extends FBase{
 		$stringHelper	= new FStringHelper();
 		foreach ($modifiedFields as $tmp => $field)
 		{
-			if ($field == '_id') {
-				continue;
-			}
 			//dostajemy pola w camelcase'ie a w bazie mamy z podkreslnikami
 			$dbField = $stringHelper->fromCamelCase($field);
 				
 			$value = is_array($entity->$field) ? json_encode($entity->$field) : $entity->$field;
+			var_dump($value);
 			$value = $this->_db->escape($value);
 			$fieldsToUpdateStr[] = "`". $dbField."` = '" . $value . "'";
 		}

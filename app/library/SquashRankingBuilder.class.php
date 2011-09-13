@@ -24,26 +24,56 @@ class SquashRankingBuilder
 	/**
 	 * repo do rankingow
 	 * 
-	 * @var FRepository
+	 * @var SquashRankingStateRepository
 	 */
 	private $_rankingRepo;
 	
-	public function __construct(SquashRankingStateRepository $rankingRepo, SquashResultRepository $resultsRepo)
+	/**
+	 * repo do operacji na graczach
+	 * 
+	 * @var FRepository
+	 */
+	private $_playersRepo;
+	
+	/**
+	 * konstuktor
+	 * 
+	 * @param SquashRankingStateRepository $rankingRepo
+	 * @param SquashResultRepository $resultsRepo
+	 * @param FRepository $playersRepo
+	 */
+	
+	public function __construct(SquashRankingStateRepository $rankingRepo, SquashResultRepository $resultsRepo, FRepository $playersRepo)
 	{
 		$this->_rankingRepo = $rankingRepo;
 		$this->_resultsRepo = $resultsRepo;
+		$this->_playersRepo = $playersRepo;
+		
 	}
 	
+	/**
+	 * wylicza rankingi na poszczegolne dni dla wszystkich graczy i aktualizuje ich aktualny ranking
+	 * 
+	 * @return void
+	 */
 	public function computeAll()
 	{
 		$dates = $this->_resultsRepo->getAllDates();
 		foreach ($dates as $date) {
 			echo "\ncomputing for date ". $date;
 			$this->computeForDate($date);
-			//exit;
 		}
+		//aktualizacja rankingow graczy
+		$this->_saveRankingForPlayers();
+		
 	}
 	
+	/**
+	 * wylicza ranking biorac pod uwage mecze rozegrane danego dnia i dotychczasowy ranking
+	 * 
+	 * @param string $date
+	 * @return void
+	 */
 	public function computeForDate($date)
 	{
 		$rankingData = $this->_getRankingDataBeforeDate($date);
@@ -63,8 +93,6 @@ class SquashRankingBuilder
 			$rankingState = new SquashRankingStateEntity($rankingStateData);
 			$this->_rankingRepo->save($rankingState);
 		}
-		
-		
 	}
 	
 	/**
@@ -107,7 +135,7 @@ class SquashRankingBuilder
 		//nie wiem co znacza, wiec nie wynosze ich do stalych klasy
 		$rankingChange = 0;
 		$d	= $playerTwoRanking - $playerOneRanking;
-		$we	= 1/(1 + 10^($d/400));
+		$we	= 1/(1 + pow(10,($d/400)));
 		//zwyciestwa
 		$wy		= 1;
 		$diff	= $wy - $we;
@@ -117,11 +145,11 @@ class SquashRankingBuilder
 		$diff	= $wy - $we;
 		$rankingChange += $result->scoreTwo * ($diff * 32);
 		
-		 return $rankingChange; 
+		return $rankingChange; 
 	}
 	
 	/**
-	 * zwraca dane o rankingu userow w ostatniej chwili przed podana data
+	 * zwraca dane o rankingu userow w ostatniej chwili przed podana data (na poczatek podanego dnia)
 	 * zwracana jest tablica zaindeksowana wg playerId, lub pusta tablica, jesli nie ma danych
 	 * 
 	 * @param string $date
@@ -130,13 +158,27 @@ class SquashRankingBuilder
 	private function _getRankingDataBeforeDate($date)
 	{
 		$rankingData = $this->_rankingRepo->getLatestBefore($date);
-		if (is_array($rankingData)) {
-			$arrayHelper = new FArrayHelper();
-			$rankingData = $arrayHelper->indexByField($rankingData, 'playerId');
-		} else {
+		if (!is_array($rankingData)) {
 			$rankingData = array();
 		}
 		
 		return $rankingData;
+	}
+	
+	/**
+	 * zapisuje graczom dane o aktualnym rankingu
+	 * 
+	 * @return void
+	 */
+	private function _saveRankingForPlayers()
+	{
+		//sprytnym zabiegiem wycigamy ranking na poczatek jutrzejszego dnia, czyli na dzisiaj :)
+		$date = date("Y-m-d", time()+24*3600);
+		$latestRankingData = $this->_getRankingDataBeforeDate($date);
+		$players = $this->_playersRepo->getAll();
+		foreach($players as $player) {
+			$player->ranking = $latestRankingData[$player->id]->ranking;
+			$this->_playersRepo->save($player);
+		}
 	}
 }
