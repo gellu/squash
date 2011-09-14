@@ -74,9 +74,19 @@ class SquashController extends FController
     	return FController::OK;
     }
     
-    public function tryRanking()
+    public function buildRanking()
     {
+    	$this->requireLogged();
     	
+    	$rankingRepo = new SquashRankingStateRepository();
+    	$resultsRepo = new SquashResultRepository();
+    	$playersRepo = new FRepository('SquashPlayerEntity');
+    	
+    	$rankingRepo->truncate();
+    	$rankingBuilder = new SquashRankingBuilder($rankingRepo, $resultsRepo, $playersRepo);
+    	$rankingBuilder->computeAll();
+    	
+    	$this->redirect(ROOT_WWW.'/squash/ranking');
     }
     
     /**
