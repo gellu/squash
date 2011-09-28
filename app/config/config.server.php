@@ -7,7 +7,7 @@ define('LOG_DIR', ROOT_DIR . '/app/var/log');
 
 define('DB_HOST', 'localhost');
 define('DB_USER', 'seled_stuff');
-define('DB_PASS', 'ka2010/2011');
+define('DB_PASS', '****');
 define('DB_NAME', 'seled_stuff');
 define('DB_LOG_FILE', LOG_DIR."/db.log");
 
