@@ -48,7 +48,6 @@ class FRepository extends FBase{
 			return $this->update($entity);
 		}
 		
-		
 		if (get_parent_class($entity) != 'FEntity') {
 			$entityFields = $this->_saveParent($entity);
 		} else {
@@ -61,10 +60,12 @@ class FRepository extends FBase{
 		$table = $this->_getTableName();
 		$type	= $replace ? "REPLACE" : "INSERT";
 		$q		= sprintf("$type INTO $table (%s) VALUES (%s)", implode(',', array_keys($fieldsToSave)), implode(',', array_values($fieldsToSave)));
-		
 		if ($this->_db->query($q))
 		{
-			$entity->id = $this->_db->getLastInsertId();
+			//moglo zostac ustawione przy zapisywaniu parenta
+			if (!$entity->id) {
+				$entity->id = $this->_db->getLastInsertId();
+			}
 			return true;
 		} else {
 			throw new FRepositoryException("saving to ".$table." failed: " . $q);
@@ -105,88 +106,130 @@ class FRepository extends FBase{
 	/**
 	 * zapisuje dane o obiekcie z ktorego dziedziczy nasza encja,
 	 * np dla SquashPlayer zapisuje dane o FUser
-	 * po zapisie do bazy, ustawia atrybut id
+	 * po zapisie do bazy, ustawia atrybut id i zwraca pola, ktore trzeba zapisac w encji dziedziczacej
 	 * 
 	 * 
 	 * @param FEntity $entity
-	 * @return array tablica pol ktore zostaja do zapisania w encji podstawowej
+	 * @return array tablica pol ktore pozostaja do zapisania w encji podstawowej
 	 */
 	private function _saveParent(FEntity $entity)
-	{
-		$entityData		= $entity->toArray();
-		$arrayHelper	= new FArrayHelper();
-		//pobieramy pola rodzica,
-		//zeby z danych dziecka wybrac tylko te, ktore sa potrzebne do stworzenia rodzica
-		$parentFieldNames	= $entity->getEntityParentFieldNames();
-		$parentFieldsAsKeys	= array_flip($parentFieldNames);
-		$parentFieldsAsKeys = $arrayHelper->keysFromCamelCase($parentFieldsAsKeys, false);
-		//z danych dziecka zostawiamy tylko te, ktore sa rowniez danymi rodzica
-		$parentData	= array_intersect_key($entityData, $parentFieldsAsKeys);
-		//tworzymy instancje repo rodzica i zapisujemy do db
-		$parentClass	= get_parent_class($entity);
-		$parentEntity	= new $parentClass($parentData);
-		$parentRepo		= new FRepository($parentClass);
+	{	
+		$parentEntity	= $entity->createParentEntity();
+		$parentRepo		= new FRepository(get_class($parentEntity));
+		
+		
 		$parentRepo->save($parentEntity);
 		//id rodzica jest jednoczesnie id dziecka (relacja 1 do 1)
 		$entity->id		= $parentEntity->id;
 		//ze wszystkich danych dziecka, oddzielnie zapisane sa tylko te, ktore nie sa danymi rodzica
-		$entityFields	= array_diff($entity->getEntityFieldNames(), $parentFieldNames);
+		$entityFields	= array_diff($entity->getEntityFieldNames(), $entity->getEntityParentFieldNames());
 		
 		return $entityFields;
 	}
 	
 	public function delete()
 	{
-		$class = get_class($this);
+		throw new FRepositoryException("unimplemented for extending entites");
+		/*$class = get_class($this);
 		$table = strtolower(str_ireplace('Model', '', $class));
 		$q = sprintf("DELETE FROM $table WHERE `id` = '%d'", $this->_id);
-		return $this->_db->query($q);
+		return $this->_db->query($q);*/
 		
 	}
 	
 	/**
 	 * aktualizuje dane a w bazie
 	 * 
-	 * @param FEntity $entity
-	 * @return boolean
-	 * @throws FRepositoryException jesli zadne dane nie zostaly zmodyfikowane lub nie udalo sie zapisac
+	 * @param	FEntity	$entity
+	 * @param	array	$fieldsToUpdate ew lista pol, ktora ma byc zmodyfikowana mimo, ze nie znajduje sie na liscie _modifiedFields - fix do zapisu ExtendedEntity
+	 * @return	boolean
+	 * @throws	FRepositoryException jesli zadne dane nie zostaly zmodyfikowane lub nie udalo sie zapisac
 	 */
-	public function update(FEntity $entity)
+	public function update(FEntity $entity, $fieldsToUpdate = array())
 	{
-		$table = $this->_getTableName();
-		$stringHelper	= new FStringHelper();
-		
-		$fields = array();
-		$modifiedFields = $entity->getModifiedFieldNames();
-		if (empty($modifiedFields)) {
-			throw new FRepositoryException("no field was modified");
-		}
-
-		foreach ($modifiedFields as $field => $tmp)
-		{
-			if ($field == '_id') {
-				continue;
-			}
-			//wywalamy podkreslnik dla pol prywatnych encji
-			$field	 = (substr($field,0,1) == '_') ? substr($field,1) : $field;
-			//dostajemy pola w camelcase'ie a w bazie mamy z podkreslnikami
-			$dbField = $stringHelper->fromCamelCase($field);
-			
-			$value = is_array($entity->$field) ? json_encode($entity->$field) : $entity->$field;
-			$value = $this->_db->escape($value);
-			$fieldsToSaveStr[] = "`". $dbField."` = '" . $value . "'";
+		if (get_parent_class($entity) != 'FEntity') {
+			$modifiedFields = $this->_updateParent($entity);
+		} else {
+			$modifiedFields = $entity->getModifiedFieldNames();
+			$modifiedFields = array_merge($modifiedFields, $fieldsToUpdate);
 		}
 		
 
-		$q = sprintf("UPDATE $table SET %s WHERE id = '%d'", implode(',', $fieldsToSaveStr), $entity->id);
-
-		if ($this->_db->query($q)) {
+		$fieldsToUpdateStr = $this->_buildFieldsToUpdate($entity, $modifiedFields);
+		$table	= $this->_getTableName();
+		$sql	= sprintf("UPDATE $table SET %s WHERE id = '%d'", implode(',', $fieldsToUpdateStr), $entity->id);
+		if ($this->_db->query($sql)) {
 			return true;
 		} else {
 			throw new FRepositoryException("update'ing table ".$table." field");
 		}
 		
 	}
+	
+	/**
+	 * aktualizuje dane dla encji nadrzednej (jesli uzyto encji ktora rozszerza wiecej niz FEntity)
+	 * 
+	 * @param	FEntity $entity
+	 * @return	array pola, ktora pozostaja do zmodyfikowana w encji dziedziczacej
+	 */
+	private function _updateParent(FEntity $entity)
+	{
+		$parentEntity		= $entity->createParentEntity();
+		$parentEntity->id	= $entity->id;
+		$parentRepo			= new FRepository(get_class($parentEntity));
+		
+		$parentFieldNames	= $entity->getEntityParentFieldNames(true);
+		$modifiedFields		= $entity->getModifiedFieldNames();
+		
+		//ze wszystkich zmodyfikowanych pol encji bierzemy tylko te nalezace do encji rodzica
+		$parentModifiedFields = array_intersect($modifiedFields, $parentFieldNames);
+		//w linii 178 ustawiamy id parenta, ale nie chcemy zeby id bylo na liscie zmodyfikowanych pol
+		if (($k = array_search('_id', $parentModifiedFields)) !== false) {
+			unset($parentModifiedFields[$k]);
+		}
+		
+		//zapsisujemy nowe dane rodzica
+		if (!empty($parentModifiedFields)) {
+			$parentRepo->update($parentEntity, $parentModifiedFields);
+		}
+		//ze wszystkich danych dziecka, oddzielnie zapisane sa tylko te, ktore nie sa danymi rodzica
+		$childModifiedFields	= array_diff($modifiedFields, $parentFieldNames);
+	
+		return $childModifiedFields;
+	}
+	
+	/**
+	 * buduje tablice stringow postaci nazwa_pola_w_db = 'wartosc_pola' na podstawie zmodyfikowanych pol encji
+	 * 
+	 * @param	FEntity $entity
+	 * @param	array $modifiedFields
+	 * @throws	FRepositoryException jesli podano pusta liste pol do modyfikacji
+	 * @return	array
+	 */
+	private function _buildFieldsToUpdate(FEntity $entity, array $modifiedFields)
+	{
+		if (($k = array_search('_id', $modifiedFields)) !== false) {
+			unset($modifiedFields[$k]);
+		}
+		if (empty($modifiedFields)) {
+			throw new FRepositoryException("no field was modified");
+		}
+		
+		$stringHelper	= new FStringHelper();
+		foreach ($modifiedFields as $tmp => $field)
+		{
+			//dostajemy pola w camelcase'ie a w bazie mamy z podkreslnikami
+			$dbField = $stringHelper->fromCamelCase($field);
+				
+			$value = is_array($entity->$field) ? json_encode($entity->$field) : $entity->$field;
+			var_dump($value);
+			$value = $this->_db->escape($value);
+			$fieldsToUpdateStr[] = "`". $dbField."` = '" . $value . "'";
+		}
+		
+		return $fieldsToUpdateStr;
+	}
+	
 	
 	/**
 	 * zwraca obiekt z bazy danych wg podanego id
@@ -292,19 +335,28 @@ class FRepository extends FBase{
 		}
 		
 		$sql	= "SELECT * FROM ".$this->_getTableName();
+		$parentClass = get_parent_class($this->_getEntityClassName());
+		if ($parentClass != 'FEntity') {
+			$sql .= " RIGHT JOIN ".$this->_getTableName($parentClass)." USING (id)"; 
+		}
 		$sql	.= (!empty($conditions)) ? " WHERE ".implode(' AND ', $conditionsStr) : "";
-		
 		return $sql;
 	}
 	
 	/**
-	 * zwraca nazwe tabeli dla uzywanej wlasnie klasy repozytorium
+	 * zwraca nazwe tabeli dla uzywanej wlasnie klasy repozytorium lub - jesli podano - dla klasy o podanej nazwie
 	 * 
-	 * @return string
+	 * @param	string $entityClassName
+	 * @return	string
 	 */
-	protected function _getTableName()
+	protected function _getTableName($entityClassName = null)
 	{
-		$class = $this->_getEntityClassName();
+		if ($entityClassName !== null) {
+			$class = $entityClassName;
+		} else {
+			$class = $this->_getEntityClassName();
+		}
+		
 		$class = str_ireplace('Entity', '', $class);
 		//wywlamy F z poczatku nazwy klas frameworkowych
 		if (substr($class, 0, 1) == 'F') {

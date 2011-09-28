@@ -38,24 +38,14 @@ class SquashResultRepository extends FRepository
 	}
 	
 	/**
-	 * zwraca wyniki meczy rozegranych podanego dnia
+	 * zwraca wszystkie daty rozegrania meczy posortowane rosnaco
 	 * 
-	 * @param string $date
-	 * @return array tablica SquashResultEntity
-	 
-	public function getResultsPlayedAt($date)
+	 * @return array
+	 */
+	public function getAllDates()
 	{
-		$sql	= "SELECT * FROM ".$this->_getTableName()." WHERE played_at = '".$date."'";
-		$res	= $this->_db->getResults($sql);
-		if ($res === null) {
-			return null;
-		}
+		$sql = "SELECT distinct(played_at) FROM ".$this->_getTableName()." ORDER BY played_at ASC";
 		
-		$results = array();
-		foreach ($res as $row) {
-			$results[] = new SquashResultEntity($row);
-		}
-		
-		return $results;
-	}*/
+		return $this->_db->getCol($sql);
+	}
 }

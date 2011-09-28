@@ -31,9 +31,7 @@ class SquashController extends FController
     {
     	$this->requireLogged();
         
-    	//$user = FLite::getInstance()->getAuthManager()->getCurrentUser();
-
-		$lastDate	= $this->_squashResultRepo->getLastPlayedDate();
+    	$lastDate	= $this->_squashResultRepo->getLastPlayedDate();
 		$this->_getDataForPlayedAtDate($lastDate);
 		
 		
@@ -51,7 +49,6 @@ class SquashController extends FController
     {
     	$this->requireLogged();
     	
-
     	$this->_getDataForPlayedAtDate($date);
     	$this->setPage('squash/index');
     	
@@ -59,37 +56,37 @@ class SquashController extends FController
     }
     
     
-    public function showRanking()
+    public function ranking()
     {
-    	$users = $this->_usersRepo->getAll();
+    	$this->requireLogged();
+    	
     	$playersRepo = new FRepository('SquashPlayerEntity');
-    	$players = array();
-    	foreach ($users as $user) {
-    		$player = $playersRepo->getById($user->id);
-    		$players[] = $player;
-    	}
-    	var_dump($players);
+    	$players	 = $playersRepo->getAll();
+    	$arrayHelper = new FArrayHelper();
+    	$players	 = $arrayHelper->sortByField($players, 'ranking', SORT_DESC);
+    	$this->assign("players", $players);
+    	
+    	
+    	$rankingRepo = new SquashRankingStateRepository();  
+    	$maxRankingDate = $rankingRepo->getMaxDate();
+    	$this->assign("date", date("Y/m/d", strtotime($maxRankingDate)));
+    	
     	return FController::OK;
     }
     
-    public function tryPlayer()
+    public function buildRanking()
     {
-    	$usersRepo = new FRepository('SquashPlayerEntity');
-    	$karolArr = array (
-    			'id'		=>	'22',
-    			'name'		=>	'Karol3',
-    			'short_name'=>	'KT3',
-    			'email'		=>	'kt3@goldenline.pl',
-    			'pass'		=>	md5('1234'),
-    			'ranking'	=>	1200	
-    	);
+    	$this->requireLogged();
     	
-    	$karol = new SquashPlayerEntity($karolArr);
-    	$karol->name = 'Karol31';
-    	$karol->ranking = 1201;
-    	$usersRepo->save($karol);
+    	$rankingRepo = new SquashRankingStateRepository();
+    	$resultsRepo = new SquashResultRepository();
+    	$playersRepo = new FRepository('SquashPlayerEntity');
     	
-    	return FController::OK;
+    	$rankingRepo->truncate();
+    	$rankingBuilder = new SquashRankingBuilder($rankingRepo, $resultsRepo, $playersRepo);
+    	$rankingBuilder->computeAll();
+    	
+    	$this->redirect(ROOT_WWW.'/squash/ranking');
     }
     
     /**
@@ -100,6 +97,10 @@ class SquashController extends FController
      */
     private function _getDataForPlayedAtDate($date)
     {
+    	if (strtotime($date) === false) {
+    		throw new Exception("wrong date format");
+    	}
+    	
     	list($prevDate, $nextDate) = $this->_squashResultRepo->getNeighbouringDates($date);
     	
     	//$results	= $this->_squashResultRepo->getResultsPlayedAt($date);
@@ -111,7 +112,7 @@ class SquashController extends FController
 	    		$resultsByPlayers[$result->playerOneId][$result->playerTwoId] = $result;
 	    	}
     	}
-    	
+    	//var_dump($results);
     	$players = array();
     	$allPlayers = $this->_usersRepo->getAll();
     	foreach ($allPlayers as $player) {
