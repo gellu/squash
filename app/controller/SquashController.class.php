@@ -34,7 +34,7 @@ class SquashController extends FController
     	$lastDate	= $this->_squashResultRepo->getLastPlayedDate();
 		$this->_getDataForPlayedAtDate($lastDate);
 		
-		
+		$this->assign('layoutTitle', "Wyniki Squash'a");
         return FController::OK;
     }
     
@@ -51,7 +51,7 @@ class SquashController extends FController
     	
     	$this->_getDataForPlayedAtDate($date);
     	$this->setPage('squash/index');
-    	
+    	$this->assign('layoutTitle', "Wyniki Squash'a");
     	return FController::OK;
     }
     
@@ -70,7 +70,7 @@ class SquashController extends FController
     	$rankingRepo = new SquashRankingStateRepository();  
     	$maxRankingDate = $rankingRepo->getMaxDate();
     	$this->assign("date", date("Y/m/d", strtotime($maxRankingDate)));
-    	
+    	$this->assign('layoutTitle', "Wyniki Squash'a");
     	return FController::OK;
     }
     

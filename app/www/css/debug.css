@@ -1,8 +1,8 @@
 #debug
 {
 	position: absolute;
-	top:0; 
-	right:0;
+	top:30px; 
+	right:5px;;
 	text-align:right;
 	z-index:100;
 	

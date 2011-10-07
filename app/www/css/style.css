@@ -12,7 +12,7 @@ body
 	left:0;
 	width:100%;
 	padding-top: 5px;
-	padding-left: 10px;
+	
 	padding-bottom: 5px;
 	min-height:15px;
 	background-color: #92140C;
@@ -29,6 +29,9 @@ body
 	color: #ddd;
 	text-decoration:none;
 }
+
+#bar #logged {margin-left:10px;}
+#bar #logout {float:right; margin-right:10px;}
 
 #Content 
 {
@@ -71,6 +74,21 @@ div.cl
 }
 .ajaxLoader, .okIcon {display:none;} 
 .squashContent {font: normal normal normal 76%/normal Verdana, sans-serif; color: #696969; }
+a {color: #45525B}
+a:hover {text-decoration:none;}
+
+#home p {margin-left:200px; font-size:25px;margin-top:60px;}
+#home p a {color: #A10021; font-weight:bold;}
+
+#login {width: 270px; margin: 0px auto;}
+#login input {border:1px solid #ccc; background-color:#fff; font-size:13px; padding:3px; letter-spacing:2px; border-radius:4px; margin-bottom:10px;}
+#login input:focus {border:1px solid #92140C; background-color: #f9f9f9}
+#login input:hover {border:1px solid #92140C;}
+#login input.text {width:225px;}
+#login input.submit {float:right; margin-right:2px;}
+#login input.submit:hover {cursor:pointer;}
+#login label {display:block; float:left; margin-top:3px; padding: 3px; width: 35px; font-size:13px;}
+
 
 #squashResults div.date {font-size:23px; font-weight:bold; color: #142524; margin-left:200px;margin-top:20px;}
 #squashResults div.date span {padding-left:10px; padding-right:10px; font-size:10px;}
@@ -92,7 +110,7 @@ div.cl
 #squashResults table.results td.result input.activeSecond {border: 1px solid #ccc; border-radius:3px; background-color:#fafaff; color: #a2a2a2}
 #squashResults table.results td.result span.colon {background-color:#fff}
 
-#squashRanking {font-size: 14px;margin-left: 200px;}
+#squashRanking {font-size: 14px;margin: 0px auto; width: 500px;}
 #squashRanking div.title {margin-left:130px;margin-bottom:40px;}
 #squashRanking div.title h1 {margin-bottom:-4px; font-size:25px; font-weight:bold; color: #142524;margin-top:23px;}
 #squashRanking div.title span {color: #ddd;font-size:15px;}
@@ -108,3 +126,5 @@ div.cl
 #squashRanking li.position_2 span.position {color: #c2c2c2}
 #squashRanking li.position_3 {font-size: 26px;}
 #squashRanking li.position_3 span.position {color: #996600}
+
+.squashContent .links {width: 200px; margin: 0px auto; font-size:18px; margin-top:70px; font-weight:bold;}

@@ -9,7 +9,7 @@
 			{if $nextDate}
 				<a href="{$ROOT_WWW}/squash/show-date/{$nextDate}">{$nextDate}<a/> &raquo;
 			{elseif $date != $today}
-				<a href="{$ROOT_WWW}/squash/show-date/{$today}">Dodaj nowe</a>  &raquo
+				<a href="{$ROOT_WWW}/squash/show-date/{$today}">Dodaj z dzisiaj</a>  &raquo
 			{/if}
 		</span>
 	</div>
@@ -55,4 +55,5 @@
 		{/foreach}
 		
 	</table>
+	<div class="links"><a href="{$ROOT_WWW}/squash/ranking">Zobacz Ranking</a></div>
 </div>

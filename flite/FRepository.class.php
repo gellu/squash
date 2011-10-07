@@ -138,6 +138,18 @@ class FRepository extends FBase{
 	}
 	
 	/**
+	 * czycsci tabele z danymi
+	 * WAZNE: nie zaimplementowano nic dla encji rozszerzajcych
+	 * 
+	 * @return
+	 */
+	public function truncate()
+	{
+		$sql = "TRUNCATE TABLE ".$this->_getTableName();
+		return $this->_db->query($sql);
+	}
+	
+	/**
 	 * aktualizuje dane a w bazie
 	 * 
 	 * @param	FEntity	$entity
@@ -222,7 +234,6 @@ class FRepository extends FBase{
 			$dbField = $stringHelper->fromCamelCase($field);
 				
 			$value = is_array($entity->$field) ? json_encode($entity->$field) : $entity->$field;
-			var_dump($value);
 			$value = $this->_db->escape($value);
 			$fieldsToUpdateStr[] = "`". $dbField."` = '" . $value . "'";
 		}

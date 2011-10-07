@@ -13,4 +13,6 @@
 		</li>
 	{/foreach}
 	</ul>
+	
+	<div class="links"><a href="{$ROOT_WWW}/squash">Zobacz Wyniki</a></div>
 </div>

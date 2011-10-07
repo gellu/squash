@@ -1,8 +1,9 @@
-
-<h1>Welcome to flite tour!</h1>
-<form action="" method="post">
-	login:<input type="text" name="login" /><br/>
-	pass:<input type="password" name="pass" /><br/>
-	<input type="submit" value="login"/>
-</form> 
+<div id="login">
+	<h1>Cześć, zaloguj się</h1>
+	<form action="" method="post">
+		<label for="login">login:</label><input type="text" name="login" class="text"/><br/>
+		<label for="pass">pass:</label><input type="password" name="pass" class="text"/><br/>
+		<input type="submit" value="Zaloguj" class="submit"/>
+	</form> 
+</div>
 

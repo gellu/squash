@@ -178,7 +178,6 @@ class FEntity extends FBase{
 			return call_user_method('get'.ucfirst($field), $this);
 		}
     	
-    	
     	//$field = $this->_fromCamelCase($field);
     	if (property_exists($this, $field)){
     		return $this->$field;

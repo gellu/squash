@@ -1,7 +1,7 @@
 <html>
 <head> 
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /> 
-    <title>New Flite app!!</title>
+    <title>karolt {if $layoutTitle}- {$layoutTitle}{/if}</title>
 	<link rel="stylesheet" type="text/css" media="screen" href="{$ROOT_WWW}/css/debug.css" />
 	<link rel="stylesheet" type="text/css" media="screen" href="{$ROOT_WWW}/css/style.css" />
 	<script type="text/javascript" src="{$ROOT_WWW}/js/jquery-1.4.2.js"></script>
@@ -22,7 +22,8 @@
 
 {if $currentUser}
 	<div id="bar">
-		{$currentUser->name} <a href="{$ROOT_WWW}/main/logout">logout</a>
+		<span id="logged">Zalogowany jako: <strong>{$currentUser->name}</strong></span> 
+		<span id="logout"><a href="{$ROOT_WWW}/main/logout">wyloguj</a></span>
 	</div>
 {/if}
 
