@@ -111,9 +111,13 @@ a:hover {text-decoration:none;}
 #squashResults table.results td.result span.colon {background-color:#fff}
 
 #squashRanking {font-size: 14px;margin: 0px auto; width: 500px;}
-#squashRanking div.title {margin-left:130px;margin-bottom:40px;}
+#squashRanking div.title {margin-left:130px;margin-bottom:40px; float:left;}
 #squashRanking div.title h1 {margin-bottom:-4px; font-size:25px; font-weight:bold; color: #142524;margin-top:23px;}
 #squashRanking div.title span {color: #ddd;font-size:15px;}
+
+#squashRanking div.menu {float:left;margin-top:10px;}
+#squashRanking div.menu li {margin-bottom:3px}
+#squashRanking div.menu a {font-size:10px;}
 
 #squashRanking li {list-style: none;margin-bottom: 10px;}
 #squashRanking li span.position {float:left; width: 30px; text-align:right; margin-right:20px;}

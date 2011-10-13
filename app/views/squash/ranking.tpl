@@ -3,7 +3,13 @@
 		<h1>Ranking</h1>
 		<span>z dnia {$date}</span>
 	</div>
-	<ul>
+	<div class="menu">
+		<ul>
+			<li><a href="{$ROOT_WWW}/squash/build-ranking">Przelicz ranking</a></li>
+			<li><a href="{$ROOT_WWW}/squash/ranking-stats">Wykres rankingu</a></li>
+		</ul>
+	</div>
+	<ul style="clear:both">
 	{foreach from=$players item=player key=key}
 		<li class="position_{$key+1}">
 			<span class="position">{$key+1}</span>

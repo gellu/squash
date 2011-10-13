@@ -74,35 +74,33 @@ class SquashController extends FController
     	return FController::OK;
     }
     
-    public function rankingStats($playerId)
+    public function rankingStats($singlePlayerId = null)
     {
     	$this->requireLogged();
+    	
     	$rankingRepo	= new SquashRankingStateRepository();
-    	
-    	if (!empty($playerId)) {
-    		$rankingStates = $rankingRepo->getAllBy(array('playerId' => $playerId));
+    	if (!empty($singlePlayerId)) {
+    		$rankingStates = $rankingRepo->getAllBy(array('playerId' => $singlePlayerId));
     	} else {
-    		$rankingStates	= $rankingRepo->getAll();
+    		$rankingStates = $rankingRepo->getAll();
     	}
-    	
-    	$arrayHelper	= new FArrayHelper();
-    	$rankingStates	= $arrayHelper->indexByField($rankingStates, 'playerId', false);
-    	
-    	$plotData = array();
-    	foreach ($rankingStates as $playerId => $playerRankingStates) {
-    		$playerRankingStates = $arrayHelper->sortByField($playerRankingStates, 'validFor', SORT_ASC);
-    		foreach ($playerRankingStates as $state) {
-    			$plotData[$playerId][strtotime($state->validFor)] = (int)$state->ranking;
-    		}
-    	}
-    	$this->assign("plotData", $plotData);
+
+    	$this->assign("plotData", $this->_getRankingPlotData($rankingStates));
     	
     	$playersRepo = new FRepository('SquashPlayerEntity');
-    	$players	 = $playersRepo->getAll();
-    	$players	 = $arrayHelper->indexByField($players, 'id');
-    	$this->assign("players", $players);
+    	/*if (!empty($singlePlayerId)) {
+    		$player	= $playersRepo->getById($singlePlayerId);
+    		$this->assign("players", array( $singlePlayerId => $player));
+    		$this->assign("player", $player);
+    	} else {*/
+    		$players	 = $playersRepo->getAll();
+    		$arrayHelper = new FArrayHelper();
+	    	$players	 = $arrayHelper->indexByField($players, 'id');
+	    	$this->assign("players", $players);
+    	//}
     	
-    	//var_dump($plotData[1]);
+    	
+    	
     	return FController::OK;	
     }
     
@@ -156,6 +154,29 @@ class SquashController extends FController
     	$this->assign('nextDate', $nextDate);
     	$this->assign('results', $resultsByPlayers);
     	$this->assign('players', $players);	
+    }
+    
+    /**
+     * na podstawie danych o wartosciach rankingow dla graczy tworzy odpowiednio posortowane i zaindeksowane dane do wykresu
+     * zwraca tablice postaci $plotData[$userId][$date] = ranking
+     * 
+     * @param array $rankingStates tablica obiektow RankingStateEntity
+     * @return array
+     */
+    private function _getRankingPlotData($rankingStates)
+    {
+    	$arrayHelper	= new FArrayHelper();
+    	$rankingStates	= $arrayHelper->indexByField($rankingStates, 'playerId', false);
+    	
+    	$plotData = array();
+    	foreach ($rankingStates as $playerId => $playerRankingStates) {
+    		$playerRankingStates = $arrayHelper->sortByField($playerRankingStates, 'validFor', SORT_ASC);
+    		foreach ($playerRankingStates as $state) {
+    			$plotData[$playerId][strtotime($state->validFor)] = (int)$state->ranking;
+    		}
+    	}
+    	
+    	return $plotData;
     }
 }
 
