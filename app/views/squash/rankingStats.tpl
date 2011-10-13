@@ -1,4 +1,4 @@
-<div id="squashRanking" class="squashContent">
+<div id="squashRankingStats" class="squashContent">
 	<div class="title">
 		<h1>Ranking - statystyki</h1>
 	</div>
@@ -33,7 +33,7 @@ $(function () {
                },
                grid: { hoverable: true, clickable: true },
                xaxis: { mode: "time", timeformat: "%d/%m/%y", max: (new Date()).getTime()+1000*24*3600*14},
-               yaxis: { max: 1600}
+               
              });
 });
  </script>

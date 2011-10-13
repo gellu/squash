@@ -7,7 +7,7 @@
 	{foreach from=$players item=player key=key}
 		<li class="position_{$key+1}">
 			<span class="position">{$key+1}</span>
-			<span class="player">{$player->name}</span>
+			<span class="player"><a href="{$ROOT_WWW}/squash/ranking-stats/{$player->id}">{$player->name}</a></span>
 			<span class="ranking">{$player->ranking}</span>
 			<div class="cl"></div>
 		</li>

@@ -74,11 +74,17 @@ class SquashController extends FController
     	return FController::OK;
     }
     
-    public function rankingStats()
+    public function rankingStats($playerId)
     {
     	$this->requireLogged();
     	$rankingRepo	= new SquashRankingStateRepository();
-    	$rankingStates	= $rankingRepo->getAll();
+    	
+    	if (!empty($playerId)) {
+    		$rankingStates = $rankingRepo->getAllBy(array('playerId' => $playerId));
+    	} else {
+    		$rankingStates	= $rankingRepo->getAll();
+    	}
+    	
     	$arrayHelper	= new FArrayHelper();
     	$rankingStates	= $arrayHelper->indexByField($rankingStates, 'playerId', false);
     	
@@ -97,7 +103,7 @@ class SquashController extends FController
     	$this->assign("players", $players);
     	
     	//var_dump($plotData[1]);
-    	return FController::OK;
+    	return FController::OK;	
     }
     
     public function buildRanking()
