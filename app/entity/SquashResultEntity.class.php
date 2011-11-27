@@ -2,7 +2,7 @@
 class SquashResultEntity extends FEntity
 {
 	/**
-	 * id pierwszego gracza
+	 * id pierwszego gracza...
 	 * 
 	 * @var int
 	 */

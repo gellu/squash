@@ -33,7 +33,6 @@ class SquashController extends FController
         
     	$lastDate	= $this->_squashResultRepo->getLastPlayedDate();
 		$this->_getDataForPlayedAtDate($lastDate);
-		
 		$this->assign('layoutTitle', "Wyniki Squash'a");
         return FController::OK;
     }
