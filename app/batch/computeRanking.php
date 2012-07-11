@@ -1,4 +1,5 @@
 <?php
+
 define("ROOT_DIR", "../..");
 require_once ROOT_DIR . "/app/config/config.php";
 
