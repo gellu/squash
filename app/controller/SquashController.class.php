@@ -65,10 +65,10 @@ class SquashController extends FController
     	$players	 = $arrayHelper->sortByField($players, 'ranking', SORT_DESC);
     	$this->assign("players", $players);
     	
-    	
     	$rankingRepo = new SquashRankingStateRepository();  
     	$maxRankingDate = $rankingRepo->getMaxDate();
-    	$this->assign("date", date("Y/m/d", strtotime($maxRankingDate)));
+		$this->assign("last_ranking", $rankingRepo->getLastRank());
+		$this->assign("date", date("Y/m/d", strtotime($maxRankingDate)));
     	$this->assign('layoutTitle', "Wyniki Squash'a");
     	return FController::OK;
     }

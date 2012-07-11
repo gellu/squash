@@ -67,6 +67,12 @@ body
 input.placeholder  {
 	color:#999999;
 }
+.minus {
+	color: #92140C;
+}
+.plus {
+	color: #5EA543;
+}
 
 div.cl
 {
@@ -122,13 +128,17 @@ a:hover {text-decoration:none;}
 #squashRanking li {list-style: none;margin-bottom: 10px;}
 #squashRanking li span.position {float:left; width: 30px; text-align:right; margin-right:20px;}
 #squashRanking li span.player {float:left; width: 170px; text-align:left; margin-right:20px;}
+#squashRanking li span.lastRanking {font-size: 12px; margin-left: 10px;}
 
 #squashRanking li.position_1 {font-size: 36px;}
+#squashRanking li.position_1 span.lastRanking {font-size: 26px;}
 #squashRanking li.position_1 span.position {color: #ffd83d}
 #squashRanking li.position_2 {font-size: 30px;}
 #squashRanking li.position_2 span.position {color: #c2c2c2}
+#squashRanking li.position_2 span.lastRanking {font-size: 20px;}
 #squashRanking li.position_3 {font-size: 26px;}
 #squashRanking li.position_3 span.position {color: #996600}
+#squashRanking li.position_3 span.lastRanking {font-size: 16px;}
 
 .squashContent .links {width: 200px; margin: 0px auto; font-size:18px; margin-top:70px; font-weight:bold;}
 
