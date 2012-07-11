@@ -1,14 +1,14 @@
 <?php
 date_default_timezone_set('Europe/Warsaw');
 
-define("ROOT_URI", "/squash/app/www");
+define("ROOT_URI", "/eclipse/squash/app/www");
 define('ROOT_WWW', 'http://localhost'.ROOT_URI);
 define('LOG_DIR', ROOT_DIR . '/app/var/log');
 
 define('DB_HOST', 'localhost');
 define('DB_USER', 'root');
 define('DB_PASS', '');
-define('DB_NAME', 'squash');
+define('DB_NAME', 'seled_stuff');
 #define('DB_LOG_FILE', LOG_DIR."/db.log");
 
 define('LOG_LEVEL_WWW', LOG_DEBUG);
